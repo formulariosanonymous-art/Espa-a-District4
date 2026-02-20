@@ -3,339 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="site-title-tag">España District | Portal</title>
+    <title>España District | Portal Profesional</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #2575fc; 
-            --bg: #0f172a; 
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --bg: #0b0f1a; 
+            --card-bg: rgba(22, 28, 45, 0.8);
             --text: #f1f5f9; 
-            --text-dim: #94a3b8;
-            --grad: linear-gradient(135deg, #6a11cb 0%, var(--primary) 100%); 
+            --norms-accent: #6366f1;
+            --gov-accent: #f59e0b;
+            --danger: #ff4757;
+            --grad: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
         }
 
         body { 
             margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: var(--text); min-height: 100vh; overflow-x: hidden;
+            background: var(--bg); color: var(--text); min-height: 100vh;
         }
 
-        /* HEADER */
         .header { 
             position: fixed; top: 0; width: 100%; height: 70px; 
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); 
+            background: rgba(11, 15, 26, 0.8); backdrop-filter: blur(20px); 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; box-sizing: border-box; z-index: 1000; 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0 20px; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* SIDEBAR (ZERO OBSTRUCTION) */
-        .sidebar-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-            z-index: 1999; opacity: 0; visibility: hidden; pointer-events: none;
-            transition: 0.3s; backdrop-filter: blur(5px);
-        }
+        /* SIDEBAR */
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1999; opacity: 0; visibility: hidden; pointer-events: none; transition: 0.3s; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
-        
-        .sidebar { 
-            position: fixed; right: -300px; top: 0; width: 280px; height: 100%; 
-            background: #1e293b; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 40px 25px; border-left: 1px solid rgba(255,255,255,0.1);
-            visibility: hidden;
-        }
-        .sidebar.open { right: 0; visibility: visible; box-shadow: -15px 0 40px rgba(0,0,0,0.5); }
+        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #161c2d; z-index: 2000; transition: 0.4s; padding: 40px 25px; visibility: hidden; }
+        .sidebar.open { right: 0; visibility: visible; }
 
-        /* VISTAS */
         .view { display: none; flex-direction: column; align-items: center; padding: 100px 20px 60px; min-height: 100vh; width: 100%; box-sizing: border-box; }
-        .view.active { display: flex; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .view.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOGO */
-        .logo-box { background: var(--grad); width: 90px; height: 90px; border-radius: 22px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 117, 252, 0.3); }
+        /* CARDS */
+        .accordion-item { width: 100%; max-width: 700px; background: var(--card-bg); border-radius: 18px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .item-norms { border-left: 6px solid var(--norms-accent); }
+        .item-gov { border-left: 6px solid var(--gov-accent); }
+
+        .accordion-header { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.2); }
+        .accordion-item.active .accordion-content { max-height: 3000px; }
+
+        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 12px 20px; transition: 0.2s; color: white; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--grad); }
+        .btn-norms { background: var(--norms-accent); }
+        .btn-gov { background: var(--gov-accent); }
+        .btn-edit { background: #3b82f6; padding: 6px 12px; font-size: 12px; }
+        .btn-del { background: var(--danger); padding: 6px 12px; font-size: 12px; }
+
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(255,255,255,0.03); color: white; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); }
+
+        .overlay-screen { position: fixed; inset: 0; background: var(--bg); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .glass-card { background: #161c2d; padding: 40px 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 360px; text-align: center; }
         
-        /* BUSCADOR */
-        .search-box { width: 100%; max-width: 600px; margin-bottom: 20px; }
-        .search-box input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; color: white; width: 100%; outline: none; }
-
-        /* ACORDEÓN */
-        .accordion-item { width: 100%; max-width: 600px; background: var(--card-bg); border-radius: 15px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
-        .accordion-header { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; background: rgba(255,255,255,0.02); }
-        .accordion-content { max-height: 0; overflow: hidden; transition: 0.3s ease; background: rgba(0,0,0,0.2); }
-        .accordion-item.active .accordion-content { max-height: 1500px; border-top: 1px solid rgba(255,255,255,0.05); }
-
-        /* BOTONES */
-        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 14px; font-size: 14px; transition: 0.2s; width: 100%; }
-        .btn-primary { background: var(--grad); color: white; }
-
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; }
-
-        .overlay-screen { position: fixed; inset: 0; background: #0f172a; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .glass-card { background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 340px; text-align: center; }
+        .staff-tag { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
+        
+        .img-norm { width: 100%; border-radius: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <div id="nav-brand" style="font-weight: 800; font-size: 18px;">ESPAÑA DISTRICT</div>
-        <button onclick="openSidebar()" style="background:rgba(255,255,255,0.05); border:none; width:40px; height:40px; border-radius:10px; color:white; font-size:20px; cursor:pointer;">☰</button>
+        <div style="font-weight: 800; letter-spacing: 1px;">ESPAÑA DISTRICT</div>
+        <button onclick="openSidebar()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">☰</button>
     </header>
 
     <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
-
     <nav class="sidebar" id="sidebar">
-        <div style="font-weight: 800; color: var(--primary); font-size: 11px; margin-bottom: 30px; opacity: 0.5;">NAVEGACIÓN</div>
+        <h3 style="color:var(--primary); font-size: 12px; opacity: 0.5;">MENÚ PRINCIPAL</h3>
         <div onclick="navigate('home')" style="padding:15px 0; cursor:pointer; font-weight:600;">🏠 Inicio</div>
         <div onclick="navigate('norms')" style="padding:15px 0; cursor:pointer; font-weight:600;">📜 Normativas</div>
         <div onclick="navigate('gov')" style="padding:15px 0; cursor:pointer; font-weight:600;">🏛️ Gobierno</div>
-        <div onclick="openAdmin()" style="padding:15px 0; cursor:pointer; font-weight:600; color:var(--primary); border-top: 1px solid rgba(255,255,255,0.1); margin-top:20px;">⚙️ Panel Staff</div>
+        <div onclick="openAdmin()" style="padding:15px 0; cursor:pointer; font-weight:700; color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); margin-top:20px;">⚙️ Panel Staff</div>
     </nav>
 
     <section id="view-home" class="view active">
-        <div class="logo-box"><img id="main-logo" src="" width="60"></div>
-        <h1 id="home-title" style="font-size: 32px; margin: 0;"></h1>
-        <p id="home-subtitle" style="color: var(--text-dim); text-align:center; max-width:300px; margin: 15px 0 30px;"></p>
-        <button class="btn btn-primary" onclick="navigate('norms')" style="width:auto; padding: 15px 40px;">Empezar Lectura</button>
+        <div style="background:var(--grad); width:100px; height:100px; border-radius:25px; margin-bottom:25px; display:flex; align-items:center; justify-content:center; box-shadow: 0 20px 40px rgba(37,117,252,0.3);">
+            <img id="main-logo" src="" width="65">
+        </div>
+        <h1 id="home-title" style="font-size: 36px; margin:0;"></h1>
+        <p id="home-subtitle" style="color:var(--text-dim); font-size: 18px; margin-top:10px; margin-bottom:40px;">Bienvenido al portal oficial de la ciudad.</p>
+        <button class="btn btn-primary" onclick="navigate('norms')" style="padding:18px 45px; font-size: 16px;">Ver Normativas</button>
     </section>
 
     <section id="view-norms" class="view">
-        <h2>📜 Normativas</h2>
-        <div class="search-box"><input type="text" id="q-norms" placeholder="¿Qué buscas?" onkeyup="render()"></div>
+        <h2 style="color:var(--norms-accent); font-size: 32px;">📜 Normativas</h2>
         <div id="norms-accordion" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </section>
 
     <section id="view-gov" class="view">
-        <h2>🏛️ Gobierno</h2>
-        <div class="search-box"><input type="text" id="q-gov" placeholder="Buscar departamento..." onkeyup="render()"></div>
+        <h2 style="color:var(--gov-accent); font-size: 32px;">🏛️ Gobierno</h2>
         <div id="gov-accordion" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </section>
 
     <section id="view-admin" class="view">
-        <div style="display:flex; gap:10px; margin-bottom:20px; width:100%; max-width:600px; overflow-x:auto;">
-            <button class="btn btn-primary" onclick="switchTab('adm-content', this)">Contenido</button>
-            <button class="btn" onclick="switchTab('adm-style', this)" style="background:rgba(255,255,255,0.05); color:white;">🎨 Diseño</button>
-            <button class="btn" onclick="askWebhookPass(this)" style="background:rgba(255,255,255,0.05); color:white;">🔒 Staff</button>
+        <div style="display:flex; gap:10px; margin-bottom:30px; width:100%; max-width:700px; overflow-x:auto; padding-bottom:10px;">
+            <button class="btn btn-norms" onclick="switchTab('tab-norms')">📖 Normas</button>
+            <button class="btn btn-gov" onclick="switchTab('tab-gov')">🏛️ Gobierno</button>
+            <button class="btn" style="background:#444;" onclick="switchTab('tab-style')">🎨 Diseño</button>
+            <button class="btn" style="background:#222;" onclick="askSafePass()">🔒 Staff</button>
         </div>
 
-        <div id="adm-content" class="adm-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Gestión de Secciones</h4>
-                <select id="adm-type-sec"><option value="norms">Normas</option><option value="gov">Gobierno</option></select>
-                <input type="text" id="adm-name-sec" placeholder="Nombre de Categoría">
-                <button class="btn btn-primary" onclick="addSec()">Crear Sección</button>
+        <div id="tab-norms" class="adm-tab" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="accordion-item" style="padding:20px;">
+                <h3 style="color:var(--norms-accent)">+ Nueva Categoría de Normas</h3>
+                <input type="text" id="add-cat-norms-name" placeholder="Nombre (ej: Normas Generales)">
+                <button class="btn btn-norms" onclick="addCat('norms')">Crear Categoría</button>
             </div>
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Nuevo Item</h4>
-                <select id="adm-sel-sec"></select>
-                <input type="text" id="adm-item-t" placeholder="Título">
-                <textarea id="adm-item-d" rows="3" placeholder="Descripción"></textarea>
-                <button class="btn btn-primary" onclick="saveItem()">Guardar Item</button>
-            </div>
-        </div>
-
-        <div id="adm-style" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Apariencia</h4>
-                <input type="text" id="st-title" placeholder="Nombre Servidor">
-                <textarea id="st-sub" placeholder="Slogan"></textarea>
-                <input type="text" id="st-logo" placeholder="URL Logo (PNG)">
-                <input type="color" id="st-color" style="height:50px;">
-                <button class="btn btn-primary" onclick="updateDesign()">Aplicar Cambios</button>
+            <div class="accordion-item" style="padding:20px;">
+                <h3 style="color:var(--norms-accent)">+ Añadir Norma a Sección</h3>
+                <select id="sel-cat-norms"></select>
+                <input type="text" id="item-norm-title" placeholder="Título de la Norma">
+                <textarea id="item-norm-desc" placeholder="Descripción de la norma..."></textarea>
+                <input type="text" id="item-norm-img" placeholder="URL Imagen/Foto (Opcional)">
+                <button class="btn btn-norms" onclick="addItem('norms')">Publicar Norma</button>
             </div>
         </div>
 
-        <div id="adm-conn" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>White-List Activa</h4>
-                <input type="text" id="new-staff-name" placeholder="Nombre Staff">
-                <button class="btn btn-primary" onclick="addToWhitelist()">+ Autorizar</button>
-                <div id="staff-whitelist-ui" style="margin-top:15px;"></div>
+        <div id="tab-gov" class="adm-tab" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="accordion-item" style="padding:20px;">
+                <h3 style="color:var(--gov-accent)">+ Nueva Sección de Gobierno</h3>
+                <input type="text" id="add-cat-gov-name" placeholder="Nombre (ej: LSPD / EMS)">
+                <button class="btn btn-gov" onclick="addCat('gov')">Crear Sección</button>
             </div>
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Historial de Expulsados</h4>
-                <p style="font-size:11px; opacity:0.6; margin-bottom:10px;">Estas personas no pueden entrar aunque tengan la llave maestra.</p>
-                <div id="staff-banned-ui"></div>
+            <div class="accordion-item" style="padding:20px;">
+                <h3 style="color:var(--gov-accent)">+ Añadir Info a Gobierno</h3>
+                <select id="sel-cat-gov"></select>
+                <input type="text" id="item-gov-title" placeholder="Título">
+                <textarea id="item-gov-desc" placeholder="Contenido..."></textarea>
+                <button class="btn btn-gov" onclick="addItem('gov')">Publicar Información</button>
             </div>
-            <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Logs Discord</h4>
-                <input type="text" id="cfg-webhook" placeholder="Webhook URL">
-                <button class="btn btn-primary" onclick="saveCfg()">Vincular</button>
+        </div>
+
+        <div id="tab-style" class="adm-tab" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="accordion-item" style="padding:20px;">
+                <h3>🎨 Personalizar Ciudad</h3>
+                <label>Nombre de la Ciudad:</label>
+                <input type="text" id="cfg-title-in">
+                <label>URL Logo:</label>
+                <input type="text" id="cfg-logo-in">
+                <label>Color Principal:</label>
+                <input type="color" id="cfg-color-in" style="height:60px;">
+                <button class="btn btn-primary" onclick="saveStyle()">Guardar Estética</button>
             </div>
-            <button class="btn" onclick="logout()" style="background:#ff4757; color:white; margin-top:20px;">Cerrar Sesión</button>
+        </div>
+
+        <div id="tab-staff" class="adm-tab" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="accordion-item" style="padding:20px;">
+                <h3>🛡️ Configuración de Claves</h3>
+                <input type="text" id="set-pass-panel" placeholder="Nueva Clave Panel">
+                <input type="text" id="set-pass-safe" placeholder="Nueva Clave Staff">
+                <button class="btn btn-primary" onclick="saveKeys()">Actualizar</button>
+            </div>
+            <div class="accordion-item" style="padding:20px;">
+                <h3>👥 Whitelist de Staff</h3>
+                <div id="list-whitelist"></div>
+                <h3 style="margin-top:20px; color:var(--danger)">🚫 Lista Negra (Expulsados)</h3>
+                <div id="list-banned"></div>
+            </div>
+            <div class="accordion-item" style="padding:20px;">
+                <h3>🔗 Webhook de Logs</h3>
+                <input type="text" id="set-webhook" placeholder="URL de Discord">
+                <button class="btn btn-primary" onclick="saveWebhook()">Vincular</button>
+            </div>
+            <button class="btn" style="background:var(--danger); width:100%; max-width:700px;" onclick="logout()">CERRAR SESIÓN (Salir de todo)</button>
         </div>
     </section>
 
-    <div id="master-gate-screen" class="overlay-screen">
+    <div id="screen-master" class="overlay-screen" style="display:none;">
         <div class="glass-card">
-            <h2>Acceso Staff</h2>
-            <input type="password" id="gate-pass" placeholder="Llave Maestra" style="text-align:center;">
-            <button class="btn btn-primary" onclick="checkGate()" style="margin-top:10px;">Verificar</button>
-            <p onclick="closeAllScreens()" style="margin-top:15px; cursor:pointer; opacity:0.5;">Cerrar</p>
+            <h2>Panel Staff</h2>
+            <input type="password" id="pass-master" placeholder="Llave Maestra" style="text-align:center;">
+            <button class="btn btn-primary" onclick="step1()">Verificar</button>
+            <p onclick="closeScreens()" style="margin-top:20px; cursor:pointer; opacity:0.5;">Volver al Portal</p>
         </div>
     </div>
 
-    <div id="staff-init-screen" class="overlay-screen">
+    <div id="screen-reg" class="overlay-screen">
         <div class="glass-card">
-            <h2>Registro Staff</h2>
-            <input type="text" id="st-name" placeholder="Tu Nombre">
-            <input type="text" id="st-range" placeholder="Tu Rango">
-            <button class="btn btn-primary" onclick="registerStaff()">Registrar y Entrar</button>
+            <h2>Identificación</h2>
+            <input type="text" id="reg-name" placeholder="Nombre Staff">
+            <input type="text" id="reg-range" placeholder="Rango">
+            <button class="btn btn-primary" onclick="step2()">Continuar</button>
         </div>
     </div>
 
-    <div id="login-screen" class="overlay-screen">
+    <div id="screen-login" class="overlay-screen">
         <div class="glass-card">
-            <h2 id="welcome-staff"></h2>
-            <input type="password" id="ses-pass" placeholder="Contraseña Panel" style="text-align:center;">
-            <button class="btn btn-primary" onclick="finalLogin()" style="margin-top:10px;">Entrar</button>
+            <h2 id="greet-name"></h2>
+            <input type="password" id="pass-panel" placeholder="Contraseña Panel" style="text-align:center;">
+            <button class="btn btn-primary" onclick="step3()">Acceder</button>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('ed_db_final')) || { norms: [], gov: [], whitelist: [], banned: [] };
-        let cfg = JSON.parse(localStorage.getItem('ed_cfg_final')) || { title: "España District", sub: "Portal de Información", logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png", color: "#2575fc", webhook: "", passA: "ESP123", passW: "Pampigod" };
-        let user = JSON.parse(localStorage.getItem('ed_user')) || null;
+        let db = JSON.parse(localStorage.getItem('ed_db_pro')) || { norms: [], gov: [], whitelist: [], banned: [] };
+        let cfg = JSON.parse(localStorage.getItem('ed_cfg_pro')) || { title: "España District", logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png", color: "#2575fc", passP: "ESP123", passS: "Pampigod", webhook: "" };
+        let user = null;
 
         function init() {
             document.getElementById('home-title').innerText = cfg.title;
-            document.getElementById('home-subtitle').innerText = cfg.sub;
             document.getElementById('main-logo').src = cfg.logo;
             document.documentElement.style.setProperty('--primary', cfg.color);
-            document.getElementById('st-title').value = cfg.title;
-            document.getElementById('st-sub').value = cfg.sub;
-            document.getElementById('st-logo').value = cfg.logo;
-            document.getElementById('st-color').value = cfg.color;
+            document.getElementById('cfg-title-in').value = cfg.title;
+            document.getElementById('cfg-logo-in').value = cfg.logo;
+            document.getElementById('cfg-color-in').value = cfg.color;
+            document.getElementById('set-pass-panel').value = cfg.passP;
+            document.getElementById('set-pass-safe').value = cfg.passS;
+            document.getElementById('set-webhook').value = cfg.webhook;
             render();
         }
 
-        // --- NAVEGACIÓN ---
+        // NAVIGATION
         function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); }
         function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
         function navigate(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); closeSidebar(); }
-        function openAdmin() { closeSidebar(); document.getElementById('master-gate-screen').style.display = 'flex'; }
-        function closeAllScreens() { document.querySelectorAll('.overlay-screen').forEach(s => s.style.display='none'); }
+        function openAdmin() { closeSidebar(); document.getElementById('screen-master').style.display = 'flex'; }
+        function closeScreens() { document.querySelectorAll('.overlay-screen').forEach(s => s.style.display='none'); }
 
-        // --- LÓGICA DE ACCESO ---
-        function checkGate() {
-            if(document.getElementById('gate-pass').value === "pampiano17") {
-                document.getElementById('master-gate-screen').style.display = 'none';
-                document.getElementById('gate-pass').value = "";
-                
-                if(!user) {
-                    document.getElementById('staff-init-screen').style.display = 'flex';
-                } else {
-                    if(db.banned && db.banned.includes(user.name)) {
-                        alert("No estás autorizado.");
-                        location.reload();
-                    } else {
-                        document.getElementById('welcome-staff').innerText = "Hola, " + user.name;
-                        document.getElementById('login-screen').style.display = 'flex';
-                    }
-                }
+        // ACCESS LOGIC
+        function step1() {
+            if(document.getElementById('pass-master').value === "pampiano17") {
+                document.getElementById('screen-master').style.display = 'none';
+                document.getElementById('screen-reg').style.display = 'flex';
             } else alert("Llave incorrecta");
         }
 
-        function registerStaff() {
-            const n = document.getElementById('st-name').value;
+        function step2() {
+            const n = document.getElementById('reg-name').value;
             if(!n) return;
-            if(db.banned && db.banned.includes(n)) {
-                alert("No estás autorizado.");
-                location.reload();
-                return;
-            }
-            user = { name: n, range: document.getElementById('st-range').value };
-            localStorage.setItem('ed_user', JSON.stringify(user));
-            if(!db.whitelist.includes(n)) db.whitelist.push(n);
+            if(db.banned.includes(n)) { alert("ESTÁS EXPULSADO"); location.reload(); return; }
+            user = { name: n, range: document.getElementById('reg-range').value };
+            if(!db.whitelist.includes(n)) { db.whitelist.push(n); save(); }
+            document.getElementById('screen-reg').style.display = 'none';
+            document.getElementById('greet-name').innerText = "Hola, " + n;
+            document.getElementById('screen-login').style.display = 'flex';
+            logDiscord("📥 Login", `El staff **${user.name}** ha entrado al panel.`);
+        }
+
+        function step3() {
+            if(document.getElementById('pass-panel').value === cfg.passP) {
+                closeScreens(); navigate('admin');
+            } else alert("Clave Incorrecta");
+        }
+
+        function logout() { 
+            logDiscord("📤 Logout", `El staff **${user.name}** ha salido.`);
+            user = null; location.reload(); 
+        }
+
+        // CORE ACTIONS
+        function addCat(type) {
+            const name = document.getElementById('add-cat-'+type+'-name').value;
+            if(name) { db[type].push({ name, items: [] }); save(); logDiscord("📁 Nueva Categoría", `Se creó la sección **${name}** en ${type}.`); }
+        }
+
+        function addItem(type) {
+            const idx = document.getElementById('sel-cat-'+type).value;
+            const t = document.getElementById('item-'+type+'-title').value;
+            const d = document.getElementById('item-'+type+'-desc').value;
+            const img = (type === 'norms') ? document.getElementById('item-norm-img').value : "";
+            db[type][idx].items.push({ title: t, desc: d, img });
             save();
-            document.getElementById('staff-init-screen').style.display = 'none';
-            document.getElementById('welcome-staff').innerText = "Bienvenido, " + n;
-            document.getElementById('login-screen').style.display = 'flex';
+            logDiscord("📝 Nuevo Ítem", `**${user.name}** publicó **${t}** en la sección ${db[type][idx].name}.`);
         }
 
-        function finalLogin() {
-            if(document.getElementById('ses-pass').value === cfg.passA) {
-                document.getElementById('login-screen').style.display = 'none';
-                navigate('admin');
-            } else alert("Contraseña incorrecta");
+        function delCat(type, idx) { if(confirm("¿Borrar sección completa?")) { db[type].splice(idx, 1); save(); } }
+        function delItem(type, sIdx, iIdx) { db[type][sIdx].items.splice(iIdx, 1); save(); }
+        
+        function editCat(type, idx) { const n = prompt("Nuevo nombre:", db[type][idx].name); if(n) { db[type][idx].name = n; save(); } }
+        function editItem(type, sIdx, iIdx) {
+            const it = db[type][sIdx].items[iIdx];
+            const nT = prompt("Título:", it.title);
+            const nD = prompt("Descripción:", it.desc);
+            if(nT) { it.title = nT; it.desc = nD; save(); }
         }
 
-        function logout() { localStorage.removeItem('ed_user'); location.reload(); }
+        function ban(i) { db.banned.push(db.whitelist[i]); db.whitelist.splice(i, 1); save(); logDiscord("🚫 Ban", "Un staff ha sido expulsado."); }
+        function unban(i) { db.whitelist.push(db.banned[i]); db.banned.splice(i, 1); save(); }
 
-        // --- FUNCIONES STAFF ---
-        function addToWhitelist() {
-            const n = document.getElementById('new-staff-name').value;
-            if(n && !db.whitelist.includes(n)) {
-                db.whitelist.push(n);
-                if(db.banned) db.banned = db.banned.filter(b => b !== n);
-                save();
-                sendDiscord("👥 Whitelist", `**${user.name}** autorizó a **${n}**.`);
-            }
-        }
+        // SETTINGS
+        function saveStyle() { cfg.title = document.getElementById('cfg-title-in').value; cfg.logo = document.getElementById('cfg-logo-in').value; cfg.color = document.getElementById('cfg-color-in').value; saveCfg(); init(); }
+        function saveKeys() { cfg.passP = document.getElementById('set-pass-panel').value; cfg.passS = document.getElementById('set-pass-safe').value; saveCfg(); alert("Claves guardadas"); }
+        function saveWebhook() { cfg.webhook = document.getElementById('set-webhook').value; saveCfg(); alert("Webhook vinculado"); }
+        function saveCfg() { localStorage.setItem('ed_cfg_pro', JSON.stringify(cfg)); }
+        function save() { localStorage.setItem('ed_db_pro', JSON.stringify(db)); render(); }
 
-        function removeFromWhitelist(i) {
-            const name = db.whitelist[i];
-            if(confirm("¿Expulsar a " + name + "? Ya no podrá entrar.")) {
-                if(!db.banned) db.banned = [];
-                db.banned.push(name);
-                db.whitelist.splice(i, 1);
-                save();
-                sendDiscord("🚫 Expulsión", `**${user.name}** expulsó a **${name}**.`);
-            }
-        }
+        function switchTab(t) { document.querySelectorAll('.adm-tab').forEach(x => x.style.display='none'); document.getElementById(t).style.display='flex'; }
+        function askSafePass() { if(prompt("Clave de Seguridad:") === cfg.passS) switchTab('tab-staff'); }
 
-        function unbanStaff(i) {
-            const name = db.banned[i];
-            db.banned.splice(i, 1);
-            db.whitelist.push(name);
-            save();
-            sendDiscord("✅ Perdón", `**${user.name}** ha perdonado a **${name}**.`);
-        }
-
+        // RENDER
         function render() {
             const nA = document.getElementById('norms-accordion');
             const gA = document.getElementById('gov-accordion');
-            const sel = document.getElementById('adm-sel-sec');
-            const qN = document.getElementById('q-norms').value.toLowerCase();
-            const qG = document.getElementById('q-gov').value.toLowerCase();
-            nA.innerHTML = ""; gA.innerHTML = ""; sel.innerHTML = "";
+            const selN = document.getElementById('sel-cat-norms');
+            const selG = document.getElementById('sel-cat-gov');
+            nA.innerHTML = ""; gA.innerHTML = ""; selN.innerHTML = ""; selG.innerHTML = "";
 
             ['norms', 'gov'].forEach(type => {
-                db[type].forEach((sec, idx) => {
-                    sel.innerHTML += `<option value="${type}-${idx}">${sec.name}</option>`;
+                db[type].forEach((sec, sIdx) => {
+                    const sel = (type === 'norms') ? selN : selG;
+                    sel.innerHTML += `<option value="${sIdx}">${sec.name}</option>`;
+                    
                     const box = (type === 'norms') ? nA : gA;
-                    const query = (type === 'norms') ? qN : qG;
-                    const items = sec.items.filter(it => it.title.toLowerCase().includes(query));
-                    if(items.length > 0 || query === "") {
-                        let h = `<div class="accordion-item"><div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">${sec.name} <span>▼</span></div><div class="accordion-content">`;
-                        items.forEach(it => h += `<div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05);"><b>${it.title}</b><p style="font-size:13px; color:var(--text-dim); margin-top:5px;">${it.desc}</p></div>`);
-                        h += `</div></div>`;
-                        box.innerHTML += h;
-                    }
+                    const accent = (type === 'norms') ? 'item-norms' : 'item-gov';
+                    
+                    let h = `<div class="accordion-item ${accent}"><div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                        ${sec.name} 
+                        <div class="admin-btns" style="display:${user ? 'block' : 'none'}">
+                            <button class="btn-edit" onclick="event.stopPropagation(); editCat('${type}', ${sIdx})">✎</button>
+                            <button class="btn-del" onclick="event.stopPropagation(); delCat('${type}', ${sIdx})">🗑</button>
+                        </div>
+                    </div><div class="accordion-content">`;
+                    
+                    sec.items.forEach((it, iIdx) => {
+                        h += `<div style="padding:20px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <b style="font-size:16px;">${it.title}</b>
+                                <div style="display:${user ? 'block' : 'none'}">
+                                    <button class="btn-edit" onclick="editItem('${type}', ${sIdx}, ${iIdx})">✎</button>
+                                    <button class="btn-del" onclick="delItem('${type}', ${sIdx}, ${iIdx})">🗑</button>
+                                </div>
+                            </div>
+                            <p style="color:var(--text-dim); line-height:1.6; margin-top:10px;">${it.desc}</p>
+                            ${it.img ? `<img src="${it.img}" class="img-norm">` : ''}
+                        </div>`;
+                    });
+                    h += `</div></div>`;
+                    box.innerHTML += h;
                 });
             });
 
-            document.getElementById('staff-whitelist-ui').innerHTML = db.whitelist.map((n, i) => `
-                <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:5px; font-size:13px;">
-                    ${n} <span onclick="removeFromWhitelist(${i})" style="color:#ff4757; cursor:pointer; font-weight:bold;">EXPULSAR</span>
-                </div>`).join('');
-
-            document.getElementById('staff-banned-ui').innerHTML = (db.banned || []).map((n, i) => `
-                <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,71,87,0.1); border-radius:10px; margin-bottom:5px; font-size:13px; border:1px solid rgba(255,71,87,0.2);">
-                    ${n} <span onclick="unbanStaff(${i})" style="color:#2ecc71; cursor:pointer; font-weight:bold;">PERDONAR</span>
-                </div>`).join('') || '<p style="font-size:12px; opacity:0.4;">No hay expulsados.</p>';
+            document.getElementById('list-whitelist').innerHTML = db.whitelist.map((n, i) => `<div class="staff-tag">${n} <span style="color:red; cursor:pointer;" onclick="ban(${i})">EXPULSAR</span></div>`).join('');
+            document.getElementById('list-banned').innerHTML = db.banned.map((n, i) => `<div class="staff-tag">${n} <span style="color:green; cursor:pointer;" onclick="unban(${i})">PERDONAR</span></div>`).join('');
         }
 
-        function addSec() { const t = document.getElementById('adm-type-sec').value; const n = document.getElementById('adm-name-sec').value; if(n) db[t].push({ name: n, items: [] }); save(); }
-        function saveItem() { const v = document.getElementById('adm-sel-sec').value.split('-'); db[v[0]][v[1]].items.push({ title: document.getElementById('adm-item-t').value, desc: document.getElementById('adm-item-d').value }); save(); }
-        function updateDesign() { cfg.title = document.getElementById('st-title').value; cfg.sub = document.getElementById('st-sub').value; cfg.logo = document.getElementById('st-logo').value; cfg.color = document.getElementById('st-color').value; localStorage.setItem('ed_cfg_final', JSON.stringify(cfg)); init(); }
-        function saveCfg() { cfg.webhook = document.getElementById('cfg-webhook').value; localStorage.setItem('ed_cfg_final', JSON.stringify(cfg)); alert("Vinculado"); }
-        function save() { localStorage.setItem('ed_db_final', JSON.stringify(db)); render(); }
-        function switchTab(t, b) { document.querySelectorAll('.adm-content').forEach(x => x.style.display='none'); document.getElementById(t).style.display='flex'; }
-        function askWebhookPass(b) { if(prompt("Contraseña:") === cfg.passW) switchTab('adm-conn', b); }
-
-        async function sendDiscord(title, desc) {
+        async function logDiscord(title, desc) {
             if(!cfg.webhook) return;
-            fetch(cfg.webhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title, description: desc, color: 2455292, timestamp: new Date() }] }) });
+            fetch(cfg.webhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title, description: desc, color: 3447003, timestamp: new Date() }] }) });
         }
 
         init();
