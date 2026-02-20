@@ -8,283 +8,307 @@
     <style>
         :root {
             --primary: #2575fc;
-            --accent: #ff8a00;
+            --success: #2ecc71;
+            --danger: #ff4d4d;
             --bg: #f4f7fa;
             --white: #ffffff;
             --shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; overflow-x: hidden; }
 
-        /* HEADER & SIDEBAR */
-        .header-controls { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .menu-icon { background: var(--white); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; border: none; font-size: 20px; }
-        
-        .sidebar { position: fixed; right: -320px; top: 0; width: 280px; height: 100%; background: var(--white); z-index: 999; transition: 0.4s; padding: 40px 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        /* HEADER */
+        .header { position: fixed; top: 0; width: 100%; height: 70px; background: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; box-shadow: var(--shadow); }
+        .menu-icon { background: #f0f2f5; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 20px; }
+
+        /* SIDEBAR AJUSTADA */
+        .sidebar { position: fixed; right: -320px; top: 0; width: 280px; height: 100%; background: var(--white); z-index: 999; transition: 0.4s; padding: 25px 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
         .sidebar.open { right: 0; }
-        .nav-content { flex-grow: 1; margin-top: 20px; }
-        .nav-item { padding: 15px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .nav-item:hover { background: #f0f0f0; }
-        .nav-item.active { background: #eef2ff; color: var(--primary); }
-
-        /* SECCIÓN INFERIOR SIDEBAR */
-        .sidebar-footer { border-top: 1px solid #eee; padding-top: 20px; }
-        .info-box { background: #5865F2; color: white; padding: 15px; border-radius: 12px; text-decoration: none; display: flex; flex-direction: column; gap: 5px; transition: 0.3s; }
-        .info-box:hover { background: #4752c4; transform: translateY(-2px); }
+        .nav-item { padding: 15px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; color: #666; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
+        .nav-item:hover { background: #f8faff; color: var(--primary); }
+        .sidebar-footer { border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 10px; }
+        .info-box { background: #5865F2; color: white; padding: 12px; border-radius: 12px; text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
 
         /* VISTAS */
-        .view { display: none; flex-direction: column; align-items: center; padding: 40px 20px; min-height: 100vh; box-sizing: border-box; }
+        .view { display: none; flex-direction: column; align-items: center; padding: 90px 20px 40px; min-height: 100vh; box-sizing: border-box; animation: fadeIn 0.3s ease; }
         .view.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ADMIN PANEL */
-        .admin-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 25px; }
-        .admin-card { background: white; padding: 25px; border-radius: 20px; box-shadow: var(--shadow); border-top: 5px solid #ddd; }
-        .admin-card.editing { border-top-color: var(--primary); background: #f8faff; }
-        
-        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 10px; background: #fafafa; font-family: inherit; box-sizing: border-box; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 5px; }
-        .btn-add { background: #2ecc71; color: white; }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-cancel { background: #eee; color: #666; margin-top: 10px; }
+        /* TABS ADMIN */
+        .admin-tabs { display: flex; background: #eee; padding: 5px; border-radius: 12px; margin-bottom: 25px; width: 100%; max-width: 500px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: none; color: #777; transition: 0.3s; }
+        .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow); }
 
-        /* GESTIÓN LISTA */
-        .manage-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
+        /* CARDS */
+        .card { background: var(--white); padding: 25px; border-radius: 20px; width: 100%; max-width: 500px; box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 10px; background: #fafafa; font-family: inherit; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); }
+
+        /* BOTONES */
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-edit { background: #eef2ff; color: var(--primary); padding: 8px; border-radius: 8px; }
+        .btn-delete { background: #fff2f2; color: var(--danger); padding: 8px; border-radius: 8px; }
+
+        /* ELEMENTOS EXISTENTES */
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
         
-        /* PÚBLICO */
-        .section-button { width: 100%; max-width: 450px; padding: 20px; border-radius: 15px; margin-bottom: 10px; border: none; font-weight: 800; color: white; cursor: pointer; display: flex; justify-content: space-between; box-shadow: var(--shadow); }
-        .norms-container { width: 100%; max-width: 450px; max-height: 0; overflow: hidden; transition: 0.4s; }
-        .norm-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        /* EDITOR TOOLS */
+        .tools { display: flex; gap: 5px; margin-top: 5px; }
+        .tools button { padding: 5px 10px; border: 1px solid #ddd; border-radius: 5px; background: white; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="header-controls">
+    <header class="header">
+        <div style="font-weight: 800; font-size: 18px;">España <span style="color:var(--primary)">District</span></div>
         <button class="menu-icon" onclick="toggleSidebar()">☰</button>
-    </div>
+    </header>
 
     <div class="sidebar" id="sidebar">
-        <h2 style="margin:0; color:var(--primary);">España District</h2>
-        
-        <div class="nav-content">
+        <div>
+            <h2 style="margin:0; color:var(--primary); font-size: 22px;">Navegación</h2>
+            <div style="font-size: 12px; color: #999; margin-bottom: 20px;">España District</div>
             <div class="nav-item" onclick="navigate('home')">🏠 Inicio</div>
             <div class="nav-item" onclick="navigate('public')">📄 Ver Normas</div>
             <div class="nav-item" onclick="navigate('admin')">⚙️ Panel Admin</div>
         </div>
 
         <div class="sidebar-footer">
-            <p style="margin: 0 0 10px 5px; font-weight: 700; color: #999; font-size: 12px; text-transform: uppercase;">Información</p>
+            <p style="margin: 0 0 8px 5px; font-weight: 700; color: #999; font-size: 11px; text-transform: uppercase;">Información</p>
             <a href="https://discord.gg/Rp5fumwpUK" target="_blank" class="info-box">
-                <span style="font-weight: 800; font-size: 14px;">Servidor de Discord</span>
-                <span style="font-size: 11px; opacity: 0.9;">Únete a nuestra comunidad oficial</span>
+                <span style="font-weight: 800; font-size: 13px;">Servidor de Discord</span>
+                <span style="font-size: 10px; opacity: 0.8;">Click para unirte</span>
             </a>
         </div>
     </div>
 
     <section id="view-home" class="view active">
-        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="120">
-        <h1 style="font-size: 32px;">España District</h1>
-        <button class="btn btn-save" style="width:auto; padding:15px 40px; border-radius:30px;" onclick="navigate('public')">Explorar Normativas</button>
+        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="120" style="margin-bottom:20px;">
+        <h1 style="font-size: 32px; margin:0;">España District</h1>
+        <p style="color:#666; margin-bottom:30px;">Bienvenid@ a las normas del servidor</p>
+        <button class="btn btn-primary" style="width:auto; padding: 15px 40px; border-radius: 30px;" onclick="navigate('public')">Ver Normas →</button>
     </section>
 
     <section id="view-public" class="view">
-        <input type="text" id="search" style="max-width:450px; margin-bottom:20px; padding:15px; border-radius:12px; border:none; width:100%; box-shadow: var(--shadow);" placeholder="🔍 Buscar norma o número..." onkeyup="renderAll()">
-        <div id="content-public" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="renderPublic()" style="max-width:500px; box-shadow: var(--shadow); border:none;">
+        <div id="public-content" style="width:100%; max-width:500px;"></div>
     </section>
 
     <section id="view-admin" class="view">
-        <div class="admin-container">
-            <div class="admin-card" id="card-sec">
-                <h3 id="title-sec">1. Crear/Editar Sección <span id="badge-sec" style="display:none; color:var(--primary); font-size:10px;">[MODO EDICIÓN]</span></h3>
-                <input type="text" id="in-sec-name" placeholder="Ej: Normativa Policial">
-                <button class="btn btn-add" id="btn-sec-action" onclick="saveSection()">+ Crear Sección</button>
-                <button class="btn btn-cancel" id="btn-sec-cancel" style="display:none;" onclick="cancelEdit()">Cancelar</button>
-            </div>
+        <h2 style="margin:0 0 20px;">Panel de Administración</h2>
+        
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('tab-sec', this)">Secciones</button>
+            <button class="tab-btn" onclick="switchTab('tab-norm', this)">Normas</button>
+            <button class="tab-btn" onclick="switchTab('tab-conf', this)">Configuración</button>
+        </div>
 
-            <div class="admin-card" id="card-norm">
-                <h3 id="title-norm">2. Crear/Editar Norma <span id="badge-norm" style="display:none; color:var(--primary); font-size:10px;">[MODO EDICIÓN]</span></h3>
-                <select id="in-norm-target"></select>
-                <input type="text" id="in-norm-title" placeholder="Título de la norma">
-                <div style="margin: 5px 0;">
-                    <button onclick="wrap('b')"><b>B</b></button> <button onclick="wrap('i')"><i>I</i></button> <button onclick="wrap('u')"><u>U</u></button> <button onclick="wrap('s')"><s>S</s></button>
+        <div id="tab-sec" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Crear Nueva Sección</h3>
+                <input type="text" id="sec-name" placeholder="Ej: Normas de Convivencia">
+                <button class="btn btn-add" id="sec-btn" onclick="saveSection()">+ Agregar Sección</button>
+                <button class="btn" id="sec-cancel" style="display:none; margin-top:10px;" onclick="clearEdit()">Cancelar</button>
+            </div>
+            <div class="card">
+                <h3>Secciones Existentes</h3>
+                <div id="list-sections"></div>
+            </div>
+        </div>
+
+        <div id="tab-norm" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Crear Nueva Norma</h3>
+                <select id="norm-target"></select>
+                <input type="text" id="norm-title" placeholder="Título: Respeto Mutuo">
+                <div class="tools">
+                    <button onclick="applyTag('b')">B</button><button onclick="applyTag('i')">I</button><button onclick="applyTag('u')">U</button><button onclick="applyTag('s')">S</button>
                 </div>
-                <textarea id="in-norm-desc" rows="4" placeholder="Escribe aquí las reglas..."></textarea>
-                <label style="font-size:11px; font-weight:700;">Subir Imagen:</label>
-                <input type="file" id="in-norm-file" accept="image/*">
-                <button class="btn btn-add" id="btn-norm-action" style="background:var(--primary);" onclick="saveNorma()">+ Guardar Norma</button>
-                <button class="btn btn-cancel" id="btn-norm-cancel" style="display:none;" onclick="cancelEdit()">Cancelar</button>
+                <textarea id="norm-desc" rows="4" placeholder="Describe la norma..."></textarea>
+                <label style="font-size:12px; font-weight:bold;">Imagen (Galería):</label>
+                <input type="file" id="norm-file" accept="image/*">
+                <button class="btn btn-primary" id="norm-btn" onclick="saveNorma()">+ Agregar Norma</button>
+                <button class="btn" id="norm-cancel" style="display:none; margin-top:10px;" onclick="clearEdit()">Cancelar</button>
             </div>
+            <div class="card">
+                <h3>Normas Existentes</h3>
+                <div id="list-norms"></div>
+            </div>
+        </div>
 
-            <div class="admin-card">
-                <h3>3. Gestión de Contenido</h3>
-                <div id="admin-list"></div>
+        <div id="tab-conf" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card" style="text-align:center;">
+                <h3>Configuración Visual</h3>
+                <p style="font-size:12px; color:#777;">Cambia el logo principal</p>
+                <img id="current-logo" src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="80" style="margin-bottom:15px;">
+                <input type="text" id="config-logo-url" placeholder="URL del nuevo logo">
+                <button class="btn btn-primary" onclick="updateConfig()">Actualizar Configuración</button>
             </div>
         </div>
     </section>
 
     <script>
         const WEBHOOK = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
-        let db = JSON.parse(localStorage.getItem('esp_db_v5')) || [];
-        let editState = { s: null, n: null };
+        let db = JSON.parse(localStorage.getItem('esp_v6')) || [];
+        let editIdx = { s: null, n: null };
 
-        // RESTAURACIÓN DE LOGS CON EMBED
-        async function sendLog(title, description, color) {
-            const embed = {
-                title: title,
-                description: description,
-                color: color || 3447003,
-                timestamp: new Date(),
-                footer: { text: "Sistema de Logs | España District" }
-            };
-            fetch(WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ embeds: [embed] })
-            });
+        async function discordLog(title, desc, color) {
+            const embed = { title: title, description: desc, color: color || 3447003, timestamp: new Date() };
+            fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [embed] }) });
         }
 
-        function save() {
-            localStorage.setItem('esp_db_v5', JSON.stringify(db));
-            renderAll();
-            renderAdmin();
+        function save() { 
+            localStorage.setItem('esp_v6', JSON.stringify(db)); 
+            renderAll(); 
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
         function navigate(v) {
-            document.querySelectorAll('.view').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
-            toggleSidebar();
+            if(window.innerWidth < 800) toggleSidebar();
         }
 
-        function wrap(tag) {
-            const area = document.getElementById('in-norm-desc');
-            area.value = area.value.substring(0, area.selectionStart) + `<${tag}>` + area.value.substring(area.selectionStart, area.selectionEnd) + `</${tag}>` + area.value.substring(area.selectionEnd);
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'flex';
+            btn.classList.add('active');
         }
 
-        async function saveSection() {
-            const name = document.getElementById('in-sec-name').value;
+        function applyTag(tag) {
+            const area = document.getElementById('norm-desc');
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            area.value = area.value.substring(0, start) + `<${tag}>` + area.value.substring(start, end) + `</${tag}>` + area.value.substring(end);
+        }
+
+        // SECCIONES
+        function saveSection() {
+            const name = document.getElementById('sec-name').value;
             if(!name) return;
-            if(editState.s !== null && editState.n === null) {
-                db[editState.s].name = name;
-                sendLog("📂 Sección Editada", `Se cambió el nombre a: **${name}**`, 16753920);
+            if(editIdx.s !== null && editIdx.n === null) {
+                db[editIdx.s].name = name;
+                discordLog("✏️ Sección Editada", `Nuevo nombre: **${name}**`, 16753920);
             } else {
                 db.push({ name, norms: [] });
-                sendLog("📂 Nueva Sección", `Se creó la categoría: **${name}**`, 3066993);
+                discordLog("📁 Nueva Sección", `Nombre: **${name}**`, 3066993);
             }
-            cancelEdit(); save();
+            clearEdit(); save();
         }
 
+        // NORMAS
         async function saveNorma() {
-            const sIdx = document.getElementById('in-norm-target').value;
-            const title = document.getElementById('in-norm-title').value;
-            const desc = document.getElementById('in-norm-desc').value;
-            const file = document.getElementById('in-norm-file').files[0];
-            let img = (editState.s !== null && editState.n !== null) ? db[editState.s].norms[editState.n].img : "";
+            const sIdx = document.getElementById('norm-target').value;
+            const title = document.getElementById('norm-title').value;
+            const desc = document.getElementById('norm-desc').value;
+            const file = document.getElementById('norm-file').files[0];
+            let img = (editIdx.s !== null && editIdx.n !== null) ? db[editIdx.s].norms[editIdx.n].img : "";
 
-            const finalize = (image) => {
-                if(editState.s !== null && editState.n !== null) {
-                    db[editState.s].norms[editState.n] = { title, desc, img: image };
-                    sendLog("📄 Norma Editada", `Norma: **${title}** en **${db[editState.s].name}**`, 16753920);
+            const upload = () => {
+                if(editIdx.s !== null && editIdx.n !== null) {
+                    db[editIdx.s].norms[editIdx.n] = { title, desc, img };
+                    discordLog("📝 Norma Editada", `Título: **${title}**`, 16753920);
                 } else {
-                    db[sIdx].norms.push({ title, desc, img: image });
-                    sendLog("📄 Nueva Norma", `Título: **${title}**\nSección: **${db[sIdx].name}**`, 3447003);
+                    db[sIdx].norms.push({ title, desc, img });
+                    discordLog("✅ Nueva Norma", `Título: **${title}**\nEn: **${db[sIdx].name}**`, 3447003);
                 }
-                cancelEdit(); save();
+                clearEdit(); save();
             };
 
             if(file) {
                 const reader = new FileReader();
-                reader.onload = () => finalize(reader.result);
+                reader.onload = () => { img = reader.result; upload(); };
                 reader.readAsDataURL(file);
-            } else { finalize(img); }
+            } else { upload(); }
         }
 
         function editItem(s, n = null) {
-            editState = { s, n };
+            editIdx = { s, n };
             if(n === null) {
-                document.getElementById('in-sec-name').value = db[s].name;
-                document.getElementById('card-sec').classList.add('editing');
-                document.getElementById('badge-sec').style.display = 'inline';
-                document.getElementById('btn-sec-action').innerText = "Actualizar Sección";
-                document.getElementById('btn-sec-cancel').style.display = 'block';
+                document.getElementById('sec-name').value = db[s].name;
+                document.getElementById('sec-btn').innerText = "Actualizar Sección";
+                document.getElementById('sec-cancel').style.display = 'block';
             } else {
-                document.getElementById('in-norm-target').value = s;
-                document.getElementById('in-norm-title').value = db[s].norms[n].title;
-                document.getElementById('in-norm-desc').value = db[s].norms[n].desc;
-                document.getElementById('card-norm').classList.add('editing');
-                document.getElementById('badge-norm').style.display = 'inline';
-                document.getElementById('btn-norm-action').innerText = "Actualizar Norma";
-                document.getElementById('btn-norm-cancel').style.display = 'block';
+                document.getElementById('norm-target').value = s;
+                document.getElementById('norm-title').value = db[s].norms[n].title;
+                document.getElementById('norm-desc').value = db[s].norms[n].desc;
+                document.getElementById('norm-btn').innerText = "Actualizar Norma";
+                document.getElementById('norm-cancel').style.display = 'block';
             }
-            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function cancelEdit() {
-            editState = { s: null, n: null };
-            document.querySelectorAll('.admin-card').forEach(c => c.classList.remove('editing'));
-            document.querySelectorAll('[id$="-cancel"], .tag-edit').forEach(e => e.style.display = 'none');
-            document.getElementById('btn-sec-action').innerText = "+ Crear Sección";
-            document.getElementById('btn-norm-action').innerText = "+ Añadir Norma";
-            document.getElementById('in-sec-name').value = "";
-            document.getElementById('in-norm-title').value = "";
-            document.getElementById('in-norm-desc').value = "";
-            document.getElementById('in-norm-file').value = "";
+        function clearEdit() {
+            editIdx = { s: null, n: null };
+            document.getElementById('sec-name').value = "";
+            document.getElementById('norm-title').value = "";
+            document.getElementById('norm-desc').value = "";
+            document.getElementById('norm-file').value = "";
+            document.getElementById('sec-btn').innerText = "+ Agregar Sección";
+            document.getElementById('norm-btn').innerText = "+ Agregar Norma";
+            document.getElementById('sec-cancel').style.display = 'none';
+            document.getElementById('norm-cancel').style.display = 'none';
         }
 
         function deleteItem(s, n = null) {
-            if(confirm("¿Estás seguro?")) {
-                const item = n === null ? db[s].name : db[s].norms[n].title;
-                sendLog("🗑️ Elemento Eliminado", `Se eliminó: **${item}**`, 15158332);
-                if(n === null) db.splice(s, 1);
-                else db[s].norms.splice(n, 1);
-                save();
+            if(!confirm("¿Eliminar definitivamente?")) return;
+            if(n === null) {
+                discordLog("🗑️ Sección Borrada", `Nombre: **${db[s].name}**`, 15158332);
+                db.splice(s, 1);
+            } else {
+                discordLog("🗑️ Norma Borrada", `Título: **${db[s].norms[n].title}**`, 15158332);
+                db[s].norms.splice(n, 1);
             }
+            save();
         }
 
-        function renderAdmin() {
-            const list = document.getElementById('admin-list');
-            const select = document.getElementById('in-norm-target');
-            list.innerHTML = ""; select.innerHTML = "";
+        function renderAll() {
+            renderPublic();
+            const lSec = document.getElementById('list-sections');
+            const lNorm = document.getElementById('list-norms');
+            const select = document.getElementById('norm-target');
+            lSec.innerHTML = ""; lNorm.innerHTML = ""; select.innerHTML = "";
+
             db.forEach((s, si) => {
                 select.innerHTML += `<option value="${si}">${s.name}</option>`;
-                list.innerHTML += `<div class="manage-item"><b>📁 ${s.name}</b><div><button onclick="editItem(${si})">✏️</button> <button onclick="deleteItem(${si})">🗑️</button></div></div>`;
+                lSec.innerHTML += `<div class="list-item"><b>${s.name}</b><div><button class="btn-edit" onclick="editItem(${si})">✏️</button><button class="btn-delete" onclick="deleteItem(${si})">🗑️</button></div></div>`;
+                
+                lNorm.innerHTML += `<div style="background:#eee; padding:5px 10px; border-radius:5px; margin-top:10px; font-weight:bold; font-size:12px;">${s.name}</div>`;
                 s.norms.forEach((n, ni) => {
-                    list.innerHTML += `<div class="manage-item" style="margin-left:25px; background:#f9f9f9; font-size:13px;"><span>${ni+1}. ${n.title}</span><div><button onclick="editItem(${si}, ${ni})">✏️</button> <button onclick="deleteItem(${si}, ${ni})">🗑️</button></div></div>`;
+                    lNorm.innerHTML += `<div class="list-item" style="margin-left:15px; font-size:13px;"><span>${n.title}</span><div><button class="btn-edit" onclick="editItem(${si},${ni})">✏️</button><button class="btn-delete" onclick="deleteItem(${si},${ni})">🗑️</button></div></div>`;
                 });
             });
         }
 
-        function renderAll() {
-            const cont = document.getElementById('content-public');
+        function renderPublic() {
+            const cont = document.getElementById('public-content');
             const q = document.getElementById('search').value.toLowerCase();
             cont.innerHTML = "";
-            db.forEach((s, i) => {
+            db.forEach((s, si) => {
                 const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q) || n.desc.toLowerCase().includes(q));
                 if(s.name.toLowerCase().includes(q) || filtered.length > 0) {
                     cont.innerHTML += `
-                        <button class="section-button" style="background:linear-gradient(135deg,#2575fc,#6a11cb);" onclick="toggleSec(${i})">
-                            ${s.name} <span>▼</span>
-                        </button>
-                        <div class="norms-container" id="sec-${i}">
-                            ${filtered.map(n => `
-                                <div class="norm-card">
-                                    <b style="color:var(--primary);">${s.norms.indexOf(n)+1}. ${n.title}</b>
-                                    <p style="font-size:14px; margin-top:8px; line-height:1.6;">${n.desc}</p>
-                                    ${n.img ? `<img src="${n.img}" style="width:100%; border-radius:10px; margin-top:10px;">` : ''}
-                                </div>
-                            `).join('')}
-                        </div>`;
+                    <div style="background:linear-gradient(135deg,#2575fc,#6a11cb); color:white; padding:15px; border-radius:12px; margin-top:15px; font-weight:800; display:flex; justify-content:space-between; cursor:pointer;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                        ${s.name} <span>▼</span>
+                    </div>
+                    <div style="display:none;">
+                        ${filtered.map(n => `
+                            <div style="background:white; padding:15px; border-radius:12px; margin-top:10px; border-left:4px solid #2575fc; box-shadow:var(--shadow);">
+                                <b>${n.title}</b>
+                                <p style="font-size:14px; color:#555; line-height:1.5;">${n.desc}</p>
+                                ${n.img ? `<img src="${n.img}" style="width:100%; border-radius:8px; margin-top:10px;">` : ''}
+                            </div>
+                        `).join('')}
+                    </div>`;
                 }
             });
         }
 
-        function toggleSec(i) {
-            const el = document.getElementById('sec-' + i);
-            const isOpen = el.style.maxHeight !== '0px' && el.style.maxHeight !== '';
-            document.querySelectorAll('.norms-container').forEach(c => c.style.maxHeight = '0px');
-            if(!isOpen) el.style.maxHeight = '3000px';
-        }
-
-        renderAll(); renderAdmin();
+        renderAll();
     </script>
 </body>
 </html>
+ 
