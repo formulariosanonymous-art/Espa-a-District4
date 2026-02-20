@@ -3,215 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Sistema de Normas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>España District | Premium System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2575fc;
-            --success: #2ecc71;
-            --danger: #ff4d4d;
-            --bg: #f4f7fa;
+            --accent: #6a11cb;
+            --bg: #f0f2f5;
             --white: #ffffff;
-            --shadow: 0 4px 15px rgba(0,0,0,0.05);
-            --gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --text: #1a1a1a;
+            --grad: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
         }
 
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
 
-        /* HEADER */
-        .header { position: fixed; top: 0; width: 100%; height: 70px; background: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; box-shadow: var(--shadow); }
-        .menu-icon { background: #f0f2f5; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 20px; }
+        /* HEADER GLASSMORPHISM */
+        .header { 
+            position: fixed; top: 0; width: 100%; height: 75px; 
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 25px; box-sizing: border-box; z-index: 100; 
+            border-bottom: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 30px rgba(0,0,0,0.05);
+        }
 
-        /* SIDEBAR */
-        .sidebar { position: fixed; right: -320px; top: 0; width: 280px; height: 100%; background: var(--white); z-index: 999; transition: 0.4s; padding: 25px 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+        /* SIDEBAR ESTILIZADA */
+        .sidebar { 
+            position: fixed; right: -320px; top: 0; width: 300px; height: 100%; 
+            background: var(--white); z-index: 999; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            padding: 30px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; 
+        }
         .sidebar.open { right: 0; }
-        .nav-item { padding: 15px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; color: #666; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .nav-item:hover { background: #f8faff; color: var(--primary); }
-        .sidebar-footer { border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 10px; }
-        .info-box { background: #5865F2; color: white; padding: 12px; border-radius: 12px; text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
+        .nav-item { 
+            padding: 16px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; 
+            font-weight: 600; display: flex; align-items: center; gap: 15px; transition: 0.3s;
+            background: #f8f9fa; border: 1px solid transparent;
+        }
+        .nav-item:hover { background: var(--bg); border-color: var(--primary); transform: translateX(-5px); }
 
-        /* LOGIN SCREEN (Basada en imagen 1000108042) */
-        #login-screen { position: fixed; inset: 0; background: var(--gradient); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: white; padding: 40px 30px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .login-icon { background: #fff1e6; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 35px; color: #ff8a00; border: 4px solid white; box-shadow: var(--shadow); }
+        /* PANTALLA DE LOGIN PREMIUM */
+        #login-screen { 
+            position: fixed; inset: 0; background: var(--grad); z-index: 2000; 
+            display: none; align-items: center; justify-content: center; 
+        }
+        .login-card { 
+            background: rgba(255,255,255,0.95); padding: 45px; border-radius: 30px; 
+            width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3);
+        }
 
         /* VISTAS */
-        .view { display: none; flex-direction: column; align-items: center; padding: 90px 20px 40px; min-height: 100vh; box-sizing: border-box; animation: fadeIn 0.3s ease; }
-        .view.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view { display: none; flex-direction: column; align-items: center; padding: 110px 20px 50px; min-height: 100vh; box-sizing: border-box; }
+        .view.active { display: flex; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
 
-        /* ADMIN COMPONENTS */
-        .admin-tabs { display: flex; background: #eee; padding: 5px; border-radius: 12px; margin-bottom: 25px; width: 100%; max-width: 500px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: none; color: #777; }
-        .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow); }
+        /* CARDS Y ELEMENTOS */
+        .card { 
+            background: var(--white); padding: 25px; border-radius: 24px; width: 100%; max-width: 550px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #f0f0f0;
+        }
+        .btn { 
+            border: none; border-radius: 15px; font-weight: 700; cursor: pointer; 
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-primary { background: var(--grad); color: white; padding: 15px 30px; }
+        .btn-primary:hover { transform: scale(1.03); box-shadow: 0 8px 25px rgba(37, 117, 252, 0.4); }
 
-        .card { background: var(--white); padding: 25px; border-radius: 20px; width: 100%; max-width: 500px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-family: inherit; box-sizing: border-box; outline: none; }
-        
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-add { background: var(--success); color: white; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-gradient { background: linear-gradient(to right, #ff8a00, #ff4d4d); color: white; }
+        /* INPUTS ESTILIZADOS */
+        input, textarea, select { 
+            width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; 
+            border-radius: 15px; background: #fff; font-family: inherit; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #fcfdfe; }
 
-        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
+        /* SECCIONES DE ADMIN */
+        .admin-tabs { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; width: 100%; max-width: 550px; padding-bottom: 5px; }
+        .tab-btn { 
+            padding: 10px 20px; border-radius: 12px; border: none; background: #ddd; 
+            font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* ACCORDION PUBLIC */
+        .sec-header { 
+            width: 100%; max-width: 550px; padding: 20px; border-radius: 20px; 
+            background: var(--grad); color: white; font-weight: 800; cursor: pointer;
+            display: flex; justify-content: space-between; margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-card">
-            <div class="login-icon">🔒</div>
-            <h2 style="margin: 0 0 5px;">Admin Panel</h2>
-            <p style="font-size: 13px; color: #777; margin-bottom: 25px;">España District - Acceso Administrativo</p>
-            <input type="password" id="admin-pass" placeholder="Ingresa la contraseña">
-            <button class="btn btn-gradient" onclick="checkPass()" style="margin-top: 15px;">Acceder</button>
-            <p onclick="navigate('home'); document.getElementById('login-screen').style.display='none';" style="margin-top:20px; font-size:12px; color:var(--primary); cursor:pointer; font-weight:600;">Volver al Inicio</p>
+            <div style="font-size: 40px; margin-bottom: 10px;">🔐</div>
+            <h2 id="login-title">Staff Access</h2>
+            <input type="password" id="admin-pass" placeholder="Contraseña de Administrador">
+            <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Entrar al Panel</button>
+            <p onclick="closeLogin()" style="cursor:pointer; font-size: 13px; color: var(--primary); margin-top: 20px; font-weight: 600;">Regresar al inicio</p>
         </div>
     </div>
 
     <header class="header">
-        <div style="font-weight: 800; font-size: 18px;">España <span style="color:var(--primary)">District</span></div>
-        <button class="menu-icon" onclick="toggleSidebar()">☰</button>
+        <div id="brand-logo" style="font-weight: 900; font-size: 20px; letter-spacing: -1px;">ESPAÑA <span style="color:var(--primary)">DISTRICT</span></div>
+        <button class="menu-icon" onclick="openSidebar()">☰</button>
     </header>
 
     <div class="sidebar" id="sidebar">
         <div>
-            <h2 style="margin:0; color:var(--primary); font-size: 22px;">Navegación</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <span style="font-weight: 800; color: var(--primary);">NAVEGACIÓN</span>
+                <button onclick="closeSidebar()" style="background:none; border:none; font-size: 25px; cursor:pointer;">×</button>
+            </div>
             <div class="nav-item" onclick="navigate('home')">🏠 Inicio</div>
-            <div class="nav-item" onclick="navigate('public')">📄 Ver Normas</div>
-            <div class="nav-item" onclick="openAdmin()">⚙️ Panel Admin</div>
+            <div class="nav-item" onclick="navigate('public')">📜 Normativas</div>
+            <div class="nav-item" onclick="openAdmin()">🛠️ Panel Staff</div>
         </div>
-
         <div class="sidebar-footer">
-            <p style="margin: 0 0 8px 5px; font-weight: 700; color: #999; font-size: 11px; text-transform: uppercase;">Información</p>
-            <a href="https://discord.gg/Rp5fumwpUK" target="_blank" class="info-box">
-                <span style="font-weight: 800; font-size: 13px;">Servidor de Discord</span>
-                <span style="font-size: 10px; opacity: 0.8;">Click para unirte</span>
+            <a href="https://discord.gg/Rp5fumwpUK" target="_blank" class="info-box" style="text-decoration:none;">
+                <div style="font-weight:800; font-size:14px;">COMUNIDAD DISCORD</div>
+                <div style="font-size:11px; opacity:0.8;">Únete para soporte y noticias</div>
             </a>
         </div>
     </div>
 
     <section id="view-home" class="view active">
-        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="120" style="margin-bottom:20px;">
-        <h1 style="font-size: 32px; margin:0;">España District</h1>
-        <p style="color:#666; margin-bottom:30px;">Bienvenid@ a las normas del servidor</p>
-        <button class="btn btn-primary" style="width:auto; padding: 15px 40px; border-radius: 30px;" onclick="navigate('public')">Ver Normas →</button>
+        <img id="main-logo" src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="160" style="filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); margin-bottom: 20px;">
+        <h1 id="home-title" style="font-size: 40px; margin: 0; text-align: center;">España District</h1>
+        <p id="home-subtitle" style="color:#666; max-width: 400px; text-align: center; line-height: 1.6; margin: 15px 0 30px;">Tu portal centralizado para todas las normativas y reglamentos del servidor.</p>
+        <button class="btn btn-primary" onclick="navigate('public')">Ver Normativas Ahora</button>
     </section>
 
     <section id="view-public" class="view">
-        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="renderPublic()" style="max-width:500px; box-shadow: var(--shadow); border:none;">
-        <div id="public-content" style="width:100%; max-width:500px;"></div>
+        <input type="text" id="search" placeholder="🔍 Buscar por palabra clave..." onkeyup="renderPublic()" style="max-width:550px; border:none; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <div id="public-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </section>
 
     <section id="view-admin" class="view">
-        <div style="display:flex; justify-content:space-between; width:100%; max-width:500px; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0;">Panel Admin</h2>
-            <button onclick="logoutAdmin()" style="border:none; color:var(--danger); background:none; font-weight:700; cursor:pointer;">Cerrar Sesión</button>
+        <div style="width:100%; max-width:550px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;">Configuración Central</h2>
+            <button onclick="navigate('home')" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer;">Salir</button>
         </div>
-        
+
         <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-sec', this)">Secciones</button>
+            <button class="tab-btn active" onclick="switchTab('tab-sec', this)">Categorías</button>
             <button class="tab-btn" onclick="switchTab('tab-norm', this)">Normas</button>
-            <button class="tab-btn" onclick="switchTab('tab-conf', this)">Configuración</button>
+            <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Personalizar</button>
         </div>
 
         <div id="tab-sec" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Crear Nueva Sección</h3>
-                <input type="text" id="sec-name" placeholder="Ej: Normas de Convivencia">
-                <button class="btn btn-add" id="sec-btn" onclick="saveSection()">+ Agregar Sección</button>
+                <h3>Nueva Categoría</h3>
+                <input type="text" id="sec-name" placeholder="Ej: Normas Civiles">
+                <button class="btn btn-primary" style="width:100%" onclick="saveSection()">+ Crear</button>
             </div>
-            <div class="card">
-                <h3>Secciones Existentes</h3>
-                <div id="list-sections"></div>
-            </div>
+            <div id="list-sections" style="width:100%; max-width:550px;"></div>
         </div>
 
         <div id="tab-norm" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Crear Nueva Norma</h3>
+                <h3>Agregar Norma</h3>
                 <select id="norm-target"></select>
                 <input type="text" id="norm-title" placeholder="Título">
-                <textarea id="norm-desc" rows="4" placeholder="Descripción..."></textarea>
+                <textarea id="norm-desc" rows="4" placeholder="Contenido..."></textarea>
                 <input type="file" id="norm-file" accept="image/*">
-                <button class="btn btn-primary" id="norm-btn" onclick="saveNorma()">+ Guardar Norma</button>
+                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Guardar Norma</button>
             </div>
-            <div class="card">
-                <h3>Lista de Normas</h3>
-                <div id="list-norms"></div>
-            </div>
+            <div id="list-norms" style="width:100%; max-width:550px;"></div>
         </div>
 
-        <div id="tab-conf" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
-            <div class="card" style="text-align:center;">
-                <h3>Configuración Visual</h3>
-                <img id="current-logo" src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="80" style="margin-bottom:15px;">
-                <input type="text" id="config-logo-url" placeholder="URL del logo">
-                <button class="btn btn-primary" onclick="updateConfig()">Actualizar Logo</button>
+        <div id="tab-style" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Inicio e Imagen</h3>
+                <label>URL Logo Principal:</label>
+                <input type="text" id="set-logo" placeholder="URL de la imagen">
+                <label>Título de Inicio:</label>
+                <input type="text" id="set-title" placeholder="España District">
+                <label>Subtítulo de Inicio:</label>
+                <textarea id="set-subtitle" placeholder="Escribe el mensaje de bienvenida..."></textarea>
+            </div>
+            <div class="card">
+                <h3>Colores del Tema</h3>
+                <label>Color Principal:</label>
+                <input type="color" id="color-p" value="#2575fc">
+                <label>Color Secundario (Degradado):</label>
+                <input type="color" id="color-a" value="#6a11cb">
+                <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="applyStyles()">Aplicar Cambios Estéticos</button>
             </div>
         </div>
     </section>
 
     <script>
         const WEBHOOK = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
-        const ADMIN_PASS = "pampiano17"; // CAMBIA TU CONTRASEÑA AQUÍ
-        let db = JSON.parse(localStorage.getItem('esp_v6')) || [];
-        let editIdx = { s: null, n: null };
+        let db = JSON.parse(localStorage.getItem('esp_v8')) || [];
+        let config = JSON.parse(localStorage.getItem('esp_config')) || {
+            logo: 'https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png',
+            title: 'España District',
+            subtitle: 'Tu portal centralizado para todas las normativas y reglamentos del servidor.',
+            colorP: '#2575fc',
+            colorA: '#6a11cb'
+        };
 
-        // SISTEMA DE SEGURIDAD
-        function openAdmin() {
-            document.getElementById('login-screen').style.display = 'flex';
-            toggleSidebar();
+        // CARGA INICIAL
+        function init() {
+            document.getElementById('main-logo').src = config.logo;
+            document.getElementById('home-title').innerText = config.title;
+            document.getElementById('home-subtitle').innerText = config.subtitle;
+            document.documentElement.style.setProperty('--primary', config.colorP);
+            document.documentElement.style.setProperty('--accent', config.colorA);
+            // Llenar campos admin
+            document.getElementById('set-logo').value = config.logo;
+            document.getElementById('set-title').value = config.title;
+            document.getElementById('set-subtitle').value = config.subtitle;
+            document.getElementById('color-p').value = config.colorP;
+            document.getElementById('color-a').value = config.colorA;
+            renderAll();
         }
 
+        // SEGURIDAD
+        function openAdmin() { closeSidebar(); document.getElementById('login-screen').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
         function checkPass() {
-            const val = document.getElementById('admin-pass').value;
-            if(val === ADMIN_PASS) {
-                document.getElementById('login-screen').style.display = 'none';
+            if(document.getElementById('admin-pass').value === "ESP123") {
+                closeLogin(); navigate('admin');
                 document.getElementById('admin-pass').value = "";
-                navigate('admin');
-            } else {
-                alert("Contraseña incorrecta");
-            }
+            } else { alert("Clave Incorrecta"); }
         }
 
-        function logoutAdmin() {
-            navigate('home');
+        // NAVEGACIÓN
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+        function navigate(v) {
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.getElementById('view-' + v).classList.add('active');
+            closeSidebar();
+        }
+        function switchTab(t, b) {
+            document.querySelectorAll('.admin-tab-content').forEach(x => x.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+            document.getElementById(t).style.display = 'flex';
+            b.classList.add('active');
         }
 
         // LOGS DISCORD
-        async function discordLog(title, desc, color) {
-            const embed = { title: title, description: desc, color: color || 3447003, timestamp: new Date() };
-            fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [embed] }) });
+        function sendLog(t, d, c) {
+            fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({embeds: [{title: t, description: d, color: c || 3447003, timestamp: new Date()}]})
+            });
         }
 
-        function save() { 
-            localStorage.setItem('esp_v6', JSON.stringify(db)); 
-            renderAll(); 
+        // PERSONALIZACIÓN
+        function applyStyles() {
+            config = {
+                logo: document.getElementById('set-logo').value,
+                title: document.getElementById('set-title').value,
+                subtitle: document.getElementById('set-subtitle').value,
+                colorP: document.getElementById('color-p').value,
+                colorA: document.getElementById('color-a').value
+            };
+            localStorage.setItem('esp_config', JSON.stringify(config));
+            init();
+            sendLog("🎨 Diseño Actualizado", "Se han modificado los colores o textos del portal.", 16776960);
+            alert("¡Estética actualizada!");
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
-        function navigate(v) {
-            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
-        }
-
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'flex';
-            btn.classList.add('active');
-        }
-
-        // FUNCIONES DE DATOS
+        // DATOS
         function saveSection() {
-            const name = document.getElementById('sec-name').value;
-            if(!name) return;
-            db.push({ name, norms: [] });
-            discordLog("📁 Nueva Sección", `Nombre: **${name}**`, 3066993);
+            const val = document.getElementById('sec-name').value;
+            if(!val) return;
+            db.push({name: val, norms: []});
             document.getElementById('sec-name').value = "";
             save();
+            sendLog("📁 Nueva Categoría", `Nombre: ${val}`, 3066993);
         }
 
         async function saveNorma() {
@@ -220,41 +285,44 @@
             const desc = document.getElementById('norm-desc').value;
             const file = document.getElementById('norm-file').files[0];
             
-            const finalize = (img) => {
-                db[sIdx].norms.push({ title, desc, img });
-                discordLog("✅ Nueva Norma", `Título: **${title}**\nEn: **${db[sIdx].name}**`, 3447003);
+            const add = (img) => {
+                db[sIdx].norms.push({title, desc, img});
                 save();
                 document.getElementById('norm-title').value = "";
                 document.getElementById('norm-desc').value = "";
+                sendLog("✅ Norma Añadida", `Título: ${title}`, 3447003);
             };
 
             if(file) {
                 const reader = new FileReader();
-                reader.onload = () => finalize(reader.result);
+                reader.onload = () => add(reader.result);
                 reader.readAsDataURL(file);
-            } else finalize("");
+            } else add("");
         }
 
         function deleteItem(s, n = null) {
-            if(!confirm("¿Borrar?")) return;
+            if(!confirm("¿Borrar definitivamente?")) return;
             if(n === null) db.splice(s, 1);
             else db[s].norms.splice(n, 1);
             save();
         }
 
+        function save() { localStorage.setItem('esp_v8', JSON.stringify(db)); renderAll(); }
+
         function renderAll() {
-            renderPublic();
             const lSec = document.getElementById('list-sections');
             const lNorm = document.getElementById('list-norms');
             const select = document.getElementById('norm-target');
             lSec.innerHTML = ""; lNorm.innerHTML = ""; select.innerHTML = "";
+            
             db.forEach((s, si) => {
                 select.innerHTML += `<option value="${si}">${s.name}</option>`;
-                lSec.innerHTML += `<div class="list-item"><b>${s.name}</b><button class="btn-delete" onclick="deleteItem(${si})">🗑️</button></div>`;
+                lSec.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:15px;"><b>${s.name}</b><button onclick="deleteItem(${si})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
                 s.norms.forEach((n, ni) => {
-                    lNorm.innerHTML += `<div class="list-item"><span>${n.title}</span><button class="btn-delete" onclick="deleteItem(${si},${ni})">🗑️</button></div>`;
+                    lNorm.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; margin-left:20px; font-size:13px;"><span>${n.title}</span><button onclick="deleteItem(${si},${ni})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
                 });
             });
+            renderPublic();
         }
 
         function renderPublic() {
@@ -262,17 +330,27 @@
             const q = document.getElementById('search').value.toLowerCase();
             cont.innerHTML = "";
             db.forEach((s, si) => {
-                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q));
+                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q) || n.desc.toLowerCase().includes(q));
                 if(filtered.length > 0 || s.name.toLowerCase().includes(q)) {
-                    cont.innerHTML += `<div style="background:var(--gradient); color:white; padding:15px; border-radius:12px; margin-top:10px; font-weight:800;">${s.name}</div>`;
-                    filtered.forEach(n => {
-                        cont.innerHTML += `<div class="card" style="margin-top:10px; border-left:5px solid var(--primary);"><b>${n.title}</b><p>${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:10px;">`:''}</div>`;
-                    });
+                    cont.innerHTML += `
+                        <div class="sec-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
+                            ${s.name} <span>▼</span>
+                        </div>
+                        <div style="display:none; width:100%; max-width:550px;">
+                            ${filtered.map(n => `
+                                <div class="card" style="margin-top:10px; width:auto;">
+                                    <b style="color:var(--primary); font-size:18px;">${n.title}</b>
+                                    <p style="color:#555; line-height:1.6; margin-top:10px;">${n.desc}</p>
+                                    ${n.img ? `<img src="${n.img}" style="width:100%; border-radius:15px; margin-top:15px;">` : ''}
+                                </div>
+                            `).join('')}
+                        </div>`;
                 }
             });
         }
 
-        renderAll();
+        init();
     </script>
 </body>
 </html>
+ 
