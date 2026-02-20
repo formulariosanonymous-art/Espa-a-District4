@@ -44,7 +44,7 @@
         .nav-item { 
             padding: 14px 18px; border-radius: 16px; margin-bottom: 8px; cursor: pointer; 
             font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s;
-            color: #64748b;
+            color: #64748b; text-decoration: none;
         }
         .nav-item:hover { background: #f1f5f9; color: var(--primary); transform: translateX(-5px); }
 
@@ -66,7 +66,7 @@
 
         input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; background: #fff; font-family: inherit; box-sizing: border-box; }
         
-        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 500px; padding: 5px; scrollbar-width: none; }
+        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 600px; padding: 5px; scrollbar-width: none; }
         .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; }
 
@@ -84,100 +84,134 @@
 
     <div class="sidebar" id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <span style="font-weight: 800; color: var(--primary); font-size: 12px;">MENÚ</span>
+            <span style="font-weight: 800; color: var(--primary); font-size: 12px;">NAVEGACIÓN</span>
             <button onclick="closeSidebar()" style="background:none; border:none; font-size: 28px; cursor:pointer; color:#cbd5e1;">&times;</button>
         </div>
         <div class="nav-item" onclick="navigate('home')">🏠 Inicio</div>
         <div class="nav-item" onclick="navigate('public')">📜 Normativas</div>
+        <div class="nav-item" onclick="navigate('gov')">🏛️ Gobierno</div>
         <div class="nav-item" onclick="openAdmin()">⚙️ Panel Staff</div>
+        
+        <div id="dynamic-menu-items" style="border-top: 1px solid #f1f5f9; margin-top: 15px; padding-top: 15px;">
+            </div>
     </div>
 
     <section id="view-home" class="view active">
         <img id="main-logo" src="" width="160" style="margin-bottom:20px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));">
         <h1 id="home-title" style="font-size: 38px; margin:0; text-align:center;"></h1>
         <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px; margin: 15px 0 30px;"></p>
-        <button class="btn btn-primary" onclick="navigate('public')">Ver Normas →</button>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="navigate('public')">Normas</button>
+            <button class="btn btn-primary" style="background:#334155;" onclick="navigate('gov')">Gobierno</button>
+        </div>
     </section>
 
     <section id="view-public" class="view">
-        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px;">
-        <div id="public-content" style="width:100%; max-width:500px;"></div>
+        <h2>📜 Normativas</h2>
+        <input type="text" id="search-norms" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px;">
+        <div id="norms-content" style="width:100%; max-width:500px;"></div>
+    </section>
+
+    <section id="view-gov" class="view">
+        <h2>🏛️ Sistema de Gobierno</h2>
+        <input type="text" id="search-gov" placeholder="🔍 Buscar en gobierno..." onkeyup="render()" style="max-width:500px;">
+        <div id="gov-content" style="width:100%; max-width:500px;"></div>
     </section>
 
     <section id="view-admin" class="view">
         <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-sections', this)">Categorías</button>
-            <button class="tab-btn" onclick="switchTab('tab-norms', this)">Normas</button>
+            <button class="tab-btn active" onclick="switchTab('tab-norms', this)">Normas</button>
+            <button class="tab-btn" onclick="switchTab('tab-gov-admin', this)">🏛️ Gobierno</button>
+            <button class="tab-btn" onclick="switchTab('tab-menu', this)">🔗 Menú/Links</button>
             <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Diseño</button>
-            <button class="tab-btn" onclick="askWebhookPass(this)">🔗 Conexiones</button>
+            <button class="tab-btn" onclick="askWebhookPass(this)">🔒 Conexiones</button>
         </div>
 
-        <div id="tab-sections" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div id="tab-norms" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Crear Categoría</h3>
-                <input type="text" id="new-sec-name" placeholder="Nombre de sección">
-                <button class="btn btn-primary" style="width:100%" onclick="addSection()">+ Crear</button>
+                <h3>Categorías de Normas</h3>
+                <input type="text" id="new-norm-sec" placeholder="Nueva categoría">
+                <button class="btn btn-primary" onclick="addSection('norms')">+ Añadir</button>
+                <div id="edit-list-secs-norms" style="margin-top:15px;"></div>
             </div>
-            <div id="list-sections" style="width:100%; max-width:500px;"></div>
-        </div>
-
-        <div id="tab-norms" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
                 <h3>Añadir Norma</h3>
-                <select id="norm-target-sec"></select>
+                <select id="sel-sec-norms"></select>
                 <input type="text" id="norm-title" placeholder="Título">
                 <textarea id="norm-desc" rows="3" placeholder="Descripción..."></textarea>
                 <input type="file" id="norm-file" accept="image/*">
-                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Guardar</button>
+                <button class="btn btn-primary" style="width:100%" onclick="saveItem('norms')">Guardar</button>
             </div>
-            <div id="list-norms-edit" style="width:100%; max-width:500px;"></div>
+        </div>
+
+        <div id="tab-gov-admin" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Categorías Gobierno</h3>
+                <input type="text" id="new-gov-sec" placeholder="Nueva categoría (ej: Ministerios)">
+                <button class="btn btn-primary" onclick="addSection('gov')">+ Añadir</button>
+                <div id="edit-list-secs-gov" style="margin-top:15px;"></div>
+            </div>
+            <div class="card">
+                <h3>Añadir Contenido Gobierno</h3>
+                <select id="sel-sec-gov"></select>
+                <input type="text" id="gov-title" placeholder="Título">
+                <textarea id="gov-desc" rows="3" placeholder="Descripción..."></textarea>
+                <input type="file" id="gov-file" accept="image/*">
+                <button class="btn btn-primary" style="width:100%" onclick="saveItem('gov')">Guardar</button>
+            </div>
+        </div>
+
+        <div id="tab-menu" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Enlaces del Menú Lateral</h3>
+                <input type="text" id="menu-label" placeholder="Texto (ej: Discord Staff)">
+                <input type="text" id="menu-url" placeholder="URL (https://...)">
+                <button class="btn btn-primary" style="width:100%" onclick="addMenuLink()">Añadir al Menú</button>
+            </div>
+            <div id="list-menu-links" style="width:100%; max-width:500px;"></div>
         </div>
 
         <div id="tab-style" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Estética de Inicio</h3>
-                <input type="text" id="set-title" placeholder="Título">
-                <textarea id="set-subtitle" placeholder="Descripción..."></textarea>
-                <input type="text" id="set-logo" placeholder="URL del Logo">
-                <button class="btn btn-primary" style="width:100%" onclick="updateStyles()">Aplicar Diseño</button>
+                <h3>Estética Principal</h3>
+                <input type="text" id="set-title">
+                <textarea id="set-subtitle"></textarea>
+                <input type="text" id="set-logo">
+                <button class="btn btn-primary" onclick="updateStyles()">Aplicar</button>
             </div>
         </div>
 
         <div id="tab-webhooks" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
-            <div class="card" style="border: 2px solid #5865F2;">
-                <h3 style="color:#5865F2;">Discord Webhook</h3>
-                <input type="text" id="set-webhook" placeholder="URL del Webhook">
-                <button class="btn btn-primary" style="width:100%; background:#5865F2;" onclick="saveWebhook()">Guardar Webhook</button>
-            </div>
             <div class="card">
-                <h3>🔑 Seguridad del Sistema</h3>
-                <label style="font-size:12px; font-weight:700;">Contraseña Admin Panel:</label>
+                <h3>Webhooks y Seguridad</h3>
+                <input type="text" id="set-webhook" placeholder="Webhook URL">
+                <button class="btn btn-primary" onclick="saveWebhook()">Guardar</button>
+                <hr>
                 <input type="text" id="set-pass-admin" placeholder="Nueva clave Admin">
-                <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="updatePass('admin')">Cambiar Clave Admin</button>
-                
-                <hr style="opacity:0.1; margin: 10px 0;">
-                
-                <label style="font-size:12px; font-weight:700;">Contraseña de esta sección (Conexiones):</label>
+                <button class="btn btn-primary" onclick="updatePass('admin')">Cambiar Clave Admin</button>
                 <input type="text" id="set-pass-web" placeholder="Nueva clave Conexiones">
-                <button class="btn btn-primary" style="width:100%" onclick="updatePass('web')">Cambiar Clave Conexiones</button>
+                <button class="btn btn-primary" onclick="updatePass('web')">Cambiar Clave Conexiones</button>
             </div>
         </div>
     </section>
 
     <div id="login-screen">
         <div class="card" style="max-width:350px; text-align:center;">
-            <h2>Staff Access</h2>
+            <h2>Acceso Restringido</h2>
             <input type="password" id="admin-pass-input" placeholder="Contraseña">
             <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Entrar</button>
-            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px;">CANCELAR</p>
+            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px;">Cerrar</p>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('esp_db_v13')) || [];
-        let config = JSON.parse(localStorage.getItem('esp_cfg_v13')) || {
+        // DATA STRUCTURE
+        let dataNorms = JSON.parse(localStorage.getItem('esp_norms_v14')) || [];
+        let dataGov = JSON.parse(localStorage.getItem('esp_gov_v14')) || [];
+        let menuLinks = JSON.parse(localStorage.getItem('esp_menu_v14')) || [];
+        let config = JSON.parse(localStorage.getItem('esp_cfg_v14')) || {
             title: "España District",
-            sub: "Tu portal oficial de normativas.",
+            sub: "Portal oficial de normativas y estado.",
             logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png",
             webhook: "",
             passAdmin: "ESP123",
@@ -191,10 +225,10 @@
             document.getElementById('set-title').value = config.title;
             document.getElementById('set-subtitle').value = config.sub;
             document.getElementById('set-logo').value = config.logo;
-            document.getElementById('set-webhook').value = config.webhook;
             render();
         }
 
+        // NAVIGATION
         function openSidebar() { 
             document.getElementById('sidebar').classList.add('open'); 
             document.getElementById('overlay').style.display = 'block'; 
@@ -211,94 +245,135 @@
             closeSidebar();
         }
 
+        // ADMIN CORE
         function openAdmin() { closeSidebar(); document.getElementById('login-screen').style.display = 'flex'; }
         function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
         function checkPass() {
             if(document.getElementById('admin-pass-input').value === config.passAdmin) {
                 closeLogin(); navigate('admin');
                 document.getElementById('admin-pass-input').value = "";
-            } else { alert("Error"); }
+            } else alert("Clave Incorrecta");
         }
         function askWebhookPass(btn) {
-            const p = prompt("Introduce la clave de Conexiones:");
+            const p = prompt("Clave de Conexiones:");
             if(p === config.passWeb) switchTab('tab-webhooks', btn);
-            else if(p !== null) alert("Incorrecta");
+            else if(p) alert("Incorrecta");
         }
 
-        function updatePass(type) {
-            const val = type === 'admin' ? document.getElementById('set-pass-admin').value : document.getElementById('set-pass-web').value;
-            if(!val) return alert("Escribe la clave");
-            if(type === 'admin') config.passAdmin = val; else config.passWeb = val;
-            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
-            alert("Contraseña guardada");
+        // CATEGORIES & ITEMS
+        function addSection(type) {
+            const input = document.getElementById(type === 'norms' ? 'new-norm-sec' : 'new-gov-sec');
+            const val = input.value; if(!val) return;
+            if(type === 'norms') dataNorms.push({name: val, items: []});
+            else dataGov.push({name: val, items: []});
+            input.value = ""; saveAll();
         }
 
-        function updateStyles() {
-            config.title = document.getElementById('set-title').value;
-            config.sub = document.getElementById('set-subtitle').value;
-            config.logo = document.getElementById('set-logo').value;
-            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
-            init();
-            alert("Cambios aplicados");
-        }
-
-        function saveWebhook() {
-            config.webhook = document.getElementById('set-webhook').value;
-            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
-            alert("Webhook guardado");
-        }
-
-        function addSection() {
-            const n = document.getElementById('new-sec-name').value;
-            if(!n) return;
-            db.push({name: n, norms: []});
-            document.getElementById('new-sec-name').value = "";
-            saveDB();
-        }
-        function deleteSection(i) { if(confirm("¿Borrar todo?")) { db.splice(i, 1); saveDB(); } }
-
-        async function saveNorma() {
-            const sIdx = document.getElementById('norm-target-sec').value;
-            const title = document.getElementById('norm-title').value;
-            const desc = document.getElementById('norm-desc').value;
-            const file = document.getElementById('norm-file').files[0];
+        async function saveItem(type) {
+            const sIdx = document.getElementById(type === 'norms' ? 'sel-sec-norms' : 'sel-sec-gov').value;
+            const title = document.getElementById(type === 'norms' ? 'norm-title' : 'gov-title').value;
+            const desc = document.getElementById(type === 'norms' ? 'norm-desc' : 'gov-desc').value;
+            const file = document.getElementById(type === 'norms' ? 'norm-file' : 'gov-file').files[0];
             if(sIdx === "") return alert("Crea una categoría");
 
             const post = (img) => {
-                db[sIdx].norms.push({title, desc, img});
-                saveDB();
-                sendLog("✅ Norma Añadida", `Categoría: ${db[sIdx].name}\nNorma: ${title}`);
+                const target = type === 'norms' ? dataNorms : dataGov;
+                target[sIdx].items.push({title, desc, img});
+                saveAll();
+                sendLog(`🆕 ${type.toUpperCase()}`, `Publicado en ${target[sIdx].name}: ${title}`);
+                alert("Guardado!");
             };
             if(file) { const r = new FileReader(); r.onload = () => post(r.result); r.readAsDataURL(file); } else post("");
         }
 
-        function deleteNorm(si, ni) { if(confirm("¿Borrar?")) { db[si].norms.splice(ni, 1); saveDB(); } }
-        function saveDB() { localStorage.setItem('esp_db_v13', JSON.stringify(db)); render(); }
+        // MENU LINKS
+        function addMenuLink() {
+            const label = document.getElementById('menu-label').value;
+            const url = document.getElementById('menu-url').value;
+            if(!label || !url) return;
+            menuLinks.push({label, url});
+            document.getElementById('menu-label').value = "";
+            document.getElementById('menu-url').value = "";
+            saveAll();
+        }
 
+        function deleteMenuLink(i) { menuLinks.splice(i, 1); saveAll(); }
+
+        // RENDER SYSTEM
         function render() {
-            const cont = document.getElementById('public-content');
-            const lSec = document.getElementById('list-sections');
-            const lNormE = document.getElementById('list-norms-edit');
-            const sel = document.getElementById('norm-target-sec');
-            const q = document.getElementById('search').value.toLowerCase();
+            const nCont = document.getElementById('norms-content');
+            const gCont = document.getElementById('gov-content');
+            const mCont = document.getElementById('dynamic-menu-items');
+            const mList = document.getElementById('list-menu-links');
             
-            cont.innerHTML = ""; lSec.innerHTML = ""; lNormE.innerHTML = ""; sel.innerHTML = "";
+            // Search values
+            const qN = document.getElementById('search-norms').value.toLowerCase();
+            const qG = document.getElementById('search-gov').value.toLowerCase();
+
+            nCont.innerHTML = ""; gCont.innerHTML = ""; mCont.innerHTML = ""; mList.innerHTML = "";
             
-            db.forEach((s, si) => {
-                sel.innerHTML += `<option value="${si}">${s.name}</option>`;
-                lSec.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;"><b>${s.name}</b><button onclick="deleteSection(${si})" style="border:none; color:red; cursor:pointer; background:none;">🗑️</button></div>`;
-                
-                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q));
+            // Render Norms
+            dataNorms.forEach((s, si) => {
+                const filtered = s.items.filter(i => i.title.toLowerCase().includes(qN));
                 if(filtered.length > 0) {
-                    cont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:var(--primary); font-size:12px;">${s.name.toUpperCase()}</div>`;
-                    filtered.forEach(n => {
-                        cont.innerHTML += `<div class="card"><b>${n.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:15px;">`:''}</div>`;
-                    });
+                    nCont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:var(--primary); font-size:12px;">${s.name.toUpperCase()}</div>`;
+                    filtered.forEach(i => nCont.innerHTML += createCard(i));
                 }
-                s.norms.forEach((n, ni) => {
-                    lNormE.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; font-size:13px;">${s.name}: ${n.title} <button onclick="deleteNorm(${si},${ni})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
-                });
             });
+
+            // Render Gov
+            dataGov.forEach((s, si) => {
+                const filtered = s.items.filter(i => i.title.toLowerCase().includes(qG));
+                if(filtered.length > 0) {
+                    gCont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:#334155; font-size:12px;">${s.name.toUpperCase()}</div>`;
+                    filtered.forEach(i => gCont.innerHTML += createCard(i));
+                }
+            });
+
+            // Render Menu
+            menuLinks.forEach((link, i) => {
+                mCont.innerHTML += `<a href="${link.url}" target="_blank" class="nav-item">🔗 ${link.label}</a>`;
+                mList.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;">${link.label} <button onclick="deleteMenuLink(${i})" style="color:red; background:none; border:none;">🗑️</button></div>`;
+            });
+
+            // Update Selects in Admin
+            updateSelects();
+        }
+
+        function createCard(item) {
+            return `<div class="card"><b>${item.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${item.desc}</p>${item.img ? `<img src="${item.img}" style="width:100%; border-radius:15px;">`:''}</div>`;
+        }
+
+        function updateSelects() {
+            const sN = document.getElementById('sel-sec-norms');
+            const sG = document.getElementById('sel-sec-gov');
+            const eN = document.getElementById('edit-list-secs-norms');
+            const eG = document.getElementById('edit-list-secs-gov');
+            
+            sN.innerHTML = ""; sG.innerHTML = ""; eN.innerHTML = ""; eG.innerHTML = "";
+            
+            dataNorms.forEach((s, i) => {
+                sN.innerHTML += `<option value="${i}">${s.name}</option>`;
+                eN.innerHTML += `<div style="font-size:12px; margin-bottom:5px;">${s.name} <span style="color:red; cursor:pointer;" onclick="deleteSec('norms', ${i})">[Borrar]</span></div>`;
+            });
+            dataGov.forEach((s, i) => {
+                sG.innerHTML += `<option value="${i}">${s.name}</option>`;
+                eG.innerHTML += `<div style="font-size:12px; margin-bottom:5px;">${s.name} <span style="color:red; cursor:pointer;" onclick="deleteSec('gov', ${i})">[Borrar]</span></div>`;
+            });
+        }
+
+        function deleteSec(type, i) {
+            if(confirm("¿Borrar categoría y todo su contenido?")) {
+                if(type === 'norms') dataNorms.splice(i, 1); else dataGov.splice(i, 1);
+                saveAll();
+            }
+        }
+
+        function saveAll() {
+            localStorage.setItem('esp_norms_v14', JSON.stringify(dataNorms));
+            localStorage.setItem('esp_gov_v14', JSON.stringify(dataGov));
+            localStorage.setItem('esp_menu_v14', JSON.stringify(menuLinks));
+            render();
         }
 
         function switchTab(t, b) {
@@ -306,6 +381,29 @@
             document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
             document.getElementById(t).style.display = 'flex';
             if(b) b.classList.add('active');
+        }
+
+        // OTHER HELPERS
+        function updatePass(type) {
+            const val = type === 'admin' ? document.getElementById('set-pass-admin').value : document.getElementById('set-pass-web').value;
+            if(!val) return;
+            if(type === 'admin') config.passAdmin = val; else config.passWeb = val;
+            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
+            alert("Contraseña actualizada");
+        }
+
+        function updateStyles() {
+            config.title = document.getElementById('set-title').value;
+            config.sub = document.getElementById('set-subtitle').value;
+            config.logo = document.getElementById('set-logo').value;
+            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
+            init();
+        }
+
+        function saveWebhook() {
+            config.webhook = document.getElementById('set-webhook').value;
+            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
+            alert("Webhook guardado");
         }
 
         async function sendLog(t, d) {
@@ -317,4 +415,3 @@
     </script>
 </body>
 </html>
- 
