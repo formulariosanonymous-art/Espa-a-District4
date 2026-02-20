@@ -3,56 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Sistema de Normas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>España District | Pro Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #ff8a00;
-            --gradient: linear-gradient(135deg, #ff8a00, #ff4e00);
-            --bg: #f8f9fb;
+            --gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --bg: #f0f2f5;
             --white: #ffffff;
-            --shadow: 0 10px 25px rgba(0,0,0,0.05);
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #1a1a1a; }
 
         /* HEADER */
         .header-controls { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .menu-icon { background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; border: none; font-size: 20px; }
+        .menu-icon { background: var(--white); width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; border: none; font-size: 24px; }
 
         /* SIDEBAR */
         .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: var(--white); z-index: 999; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 60px 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
         .sidebar.open { right: 0; }
-        .nav-item { display: flex; align-items: center; gap: 15px; padding: 15px; text-decoration: none; color: #555; border-radius: 12px; margin-bottom: 10px; font-weight: 500; cursor: pointer; }
-        .nav-item.active { background: var(--gradient); color: var(--white); box-shadow: 0 5px 15px rgba(255, 138, 0, 0.3); }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; margin-bottom: 10px; font-weight: 600; cursor: pointer; color: #555; transition: 0.3s; }
+        .nav-item.active { background: #eef2ff; color: #2575fc; }
 
         /* VISTAS */
         .view { display: none; flex-direction: column; align-items: center; padding: 40px 20px; animation: fadeIn 0.3s ease; min-height: 100vh; box-sizing: border-box; }
         .view.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         /* BUSCADOR */
-        .search-container { width: 100%; max-width: 450px; margin-bottom: 20px; position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 10px 0; }
-        .search-input { width: 100%; padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: var(--shadow); font-size: 14px; outline: none; }
+        .search-input { width: 100%; max-width: 450px; padding: 18px; border-radius: 20px; border: none; box-shadow: var(--shadow); font-size: 15px; margin-bottom: 25px; outline: none; }
 
-        /* NORMAS ENUMERADAS */
-        .norm-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #eee; text-align: left; position: relative; }
-        .norm-number { background: var(--gradient); color: white; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; margin-right: 10px; vertical-align: middle; }
-        .norm-img { width: 100%; border-radius: 12px; margin-top: 15px; cursor: zoom-in; transition: 0.2s; }
-        .norm-img:hover { opacity: 0.9; }
+        /* BOTONES DE SECCIÓN CON COLORES */
+        .section-button { 
+            width: 100%; max-width: 450px; border: none; padding: 22px; 
+            border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; 
+            align-items: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.3s;
+            font-size: 17px; font-weight: 800; color: white;
+        }
+        /* Colores aleatorios por clase */
+        .sec-color-0 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #b02e50; }
+        .sec-color-1 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); color: #2e5cb0; }
+        .sec-color-2 { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #2eb06e; }
+        .sec-color-3 { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); color: #7e2eb0; }
 
-        /* MODAL IMAGEN */
-        #imgModal { display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; }
-        #imgModal img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+        .norms-container { width: 100%; max-width: 450px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
 
-        /* ADMIN */
-        .admin-card { background: white; border-radius: 24px; padding: 25px; box-shadow: var(--shadow); width: 100%; max-width: 500px; box-sizing: border-box; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-family: inherit; box-sizing: border-box; }
-        .btn-green { width: 100%; padding: 16px; border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; background: #2ecc71; }
-        .btn-del { background: #fff2f2; color: #ff4e4e; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
-        .list-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
+        /* NORMAS */
+        .norm-card { background: white; padding: 20px; border-radius: 20px; margin: 10px 5px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 5px solid #2575fc; }
+        .norm-img { width: 100%; border-radius: 15px; margin-top: 15px; cursor: pointer; }
 
-        .login-bg { position: fixed; inset: 0; background: linear-gradient(180deg, #4c1d95, #1e1b4b); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        /* EDITOR TOOLS */
+        .editor-tools { display: flex; gap: 5px; margin-bottom: 5px; }
+        .tool-btn { padding: 5px 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; background: white; font-weight: bold; }
+
+        /* ADMIN CARD */
+        .admin-card { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 500px; box-shadow: var(--shadow); }
+        input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #eee; border-radius: 12px; background: #f9f9f9; font-family: inherit; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; background: #2575fc; margin-top: 10px; }
+
+        /* MODAL */
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        #modal img { max-width: 100%; max-height: 90vh; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -61,72 +73,84 @@
         <button class="menu-icon" onclick="toggleSidebar()">☰</button>
     </div>
 
-    <div id="imgModal" onclick="this.style.display='none'">
-        <img id="imgModalSrc" src="">
-    </div>
+    <div id="modal" onclick="this.style.display='none'"><img id="modalImg"></div>
 
     <div class="sidebar" id="sidebar">
-        <h2 style="margin:0">Navegación</h2>
-        <p style="color:#ccc; font-size:12px; margin-bottom:30px;">España District</p>
-        <div class="nav-item" id="nav-home" onclick="navigate('home')">🏠 Inicio</div>
-        <div class="nav-item" id="nav-public" onclick="navigate('public')">📄 Secciones</div>
-        <div class="nav-item" id="nav-login" onclick="navigate('login')">⚙️ Admin Panel</div>
+        <h2 style="margin:0">Admin Panel</h2>
+        <p style="color:#aaa; font-size:12px;">España District v3.0</p>
+        <div class="nav-item active" onclick="navigate('home')">🏠 Inicio</div>
+        <div class="nav-item" onclick="navigate('public')">📄 Normativas</div>
+        <div class="nav-item" onclick="navigate('login')">⚙️ Configuración</div>
     </div>
 
     <section id="view-home" class="view active">
-        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" style="width:140px; border-radius:25px; box-shadow:var(--shadow); margin-bottom:20px;">
-        <h1 style="background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:35px; margin:0;">España District</h1>
-        <button class="btn-orange" onclick="navigate('public')" style="background:var(--gradient); color:white; border:none; padding:16px 40px; border-radius:35px; font-weight:700; cursor:pointer; margin-top:20px;">Ver Normas →</button>
+        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" width="150">
+        <h1 style="font-size: 40px; font-weight: 800; margin: 10px 0;">District <span style="color:#2575fc">ESP</span></h1>
+        <button class="btn-action" style="width:auto; padding: 18px 50px; border-radius: 40px;" onclick="navigate('public')">Entrar a Normas</button>
     </section>
 
     <section id="view-public" class="view">
-        <div class="search-container">
-            <input type="text" class="search-input" id="normSearch" placeholder="🔍 Buscar por nombre o número..." onkeyup="renderAll()">
-        </div>
-        <div id="content-public" style="width:100%; max-width:450px;"></div>
+        <input type="text" class="search-input" id="search" placeholder="🔍 Buscar norma..." onkeyup="renderAll()">
+        <div id="content-public" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </section>
 
-    <div id="view-login" class="login-bg">
-        <div style="background:white; padding:40px; border-radius:30px; text-align:center; width:90%; max-width:360px;">
-            <h2>Panel Administrativo</h2>
-            <input type="password" id="adminPass" placeholder="Contraseña">
-            <button class="btn-green" style="background:var(--gradient)" onclick="checkLogin()">Entrar</button>
-            <p onclick="navigate('home')" style="color:gray; font-size:12px; cursor:pointer; margin-top:15px;">Volver</p>
+    <section id="view-admin" class="view">
+        <div class="admin-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 id="admin-title">Nueva Sección</h2>
+                <button onclick="cancelEdit()" id="cancel-btn" style="display:none; color:red; border:none; background:none; cursor:pointer;">Cancelar</button>
+            </div>
+            
+            <div id="form-box">
+                <div id="sec-form">
+                    <input type="text" id="sec-name" placeholder="Nombre de la Sección">
+                    <button class="btn-action" onclick="saveSection()">Guardar Sección</button>
+                </div>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                <div id="norm-form">
+                    <h3>Añadir/Editar Norma</h3>
+                    <select id="norm-sec-target"></select>
+                    <input type="text" id="norm-title" placeholder="Título">
+                    
+                    <div class="editor-tools">
+                        <button class="tool-btn" onclick="wrapText('b')">B</button>
+                        <button class="tool-btn" onclick="wrapText('i')">I</button>
+                        <button class="tool-btn" onclick="wrapText('u')">U</button>
+                        <button class="tool-btn" onclick="wrapText('s')">S</button>
+                    </div>
+                    <textarea id="norm-desc" rows="4" placeholder="Reglas..."></textarea>
+                    
+                    <label style="font-size:12px; color:#666;">Cargar Foto de Galería:</label>
+                    <input type="file" id="norm-file" accept="image/*">
+                    <button class="btn-action" style="background:#2ecc71" onclick="saveNorma()">Guardar Norma</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="admin-list" style="width:100%; max-width:500px; margin-top:30px;"></div>
+    </section>
+
+    <div id="view-login" class="view" style="background:white; display:none; justify-content:center;">
+        <div class="admin-card" style="text-align:center;">
+            <h2>Staff Login</h2>
+            <input type="password" id="pass" placeholder="Contraseña">
+            <button class="btn-action" onclick="login()">Acceder</button>
         </div>
     </div>
 
-    <section id="view-admin" class="view">
-        <div style="width:100%; max-width:500px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <h2>Configuración</h2>
-                <button onclick="navigate('home')" style="color:red; background:none; border:none; font-weight:700; cursor:pointer;">Cerrar</button>
-            </div>
-            <div style="display:flex; background:#eee; padding:5px; border-radius:14px; margin-bottom:20px;">
-                <button class="tab active" id="tab0" onclick="switchTab(0)" style="flex:1; padding:10px; border:none; border-radius:10px; cursor:pointer;">Secciones</button>
-                <button class="tab" id="tab1" onclick="switchTab(1)" style="flex:1; padding:10px; border:none; border-radius:10px; cursor:pointer;">Normas</button>
-            </div>
-            <div id="admin-form-container" class="admin-card"></div>
-            <div id="admin-list-container"></div>
-        </div>
-    </section>
-
     <script>
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
-        let dataStore = JSON.parse(localStorage.getItem('espana_data')) || [];
+        const WEBHOOK = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
+        let db = JSON.parse(localStorage.getItem('esp_db')) || [];
+        let editing = { sIdx: null, nIdx: null };
 
-        function saveData() {
-            localStorage.setItem('espana_data', JSON.stringify(dataStore));
-            renderAll();
+        function save() { 
+            localStorage.setItem('esp_db', JSON.stringify(db)); 
+            renderAll(); 
+            renderAdmin(); 
         }
 
-        async function sendLog(accion, detalle) {
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    embeds: [{ title: "España District Logs", description: `**${accion}:** ${detalle}`, color: 16747008, timestamp: new Date() }]
-                })
-            });
+        async function log(msg) {
+            fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ content: `**España District Log:** ${msg}` })});
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -134,101 +158,183 @@
         function navigate(v) {
             document.querySelectorAll('.view').forEach(s => s.classList.remove('active'));
             document.getElementById('view-login').style.display = 'none';
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            if(v === 'login') { document.getElementById('view-login').style.display = 'flex'; }
-            else { document.getElementById('view-'+v).classList.add('active'); document.getElementById('nav-'+v).classList.add('active'); }
-            document.getElementById('sidebar').classList.remove('open');
-            renderAll();
-        }
-
-        function checkLogin() {
-            if(document.getElementById('adminPass').value === "pampiano17") { navigate('admin'); switchTab(0); }
-            else alert("Error");
-        }
-
-        function openZoom(src) {
-            document.getElementById('imgModalSrc').src = src;
-            document.getElementById('imgModal').style.display = 'flex';
-        }
-
-        function switchTab(t) {
-            document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', i === t));
-            const container = document.getElementById('admin-form-container');
-            if(t === 0) {
-                container.innerHTML = `<h3>Nueva Sección</h3><input id="new-sec-name" placeholder="Ej: Normas Civiles"><button class="btn-green" onclick="addSection()">+ Crear Sección</button>`;
+            if(v === 'login' && !sessionStorage.getItem('admin')) {
+                document.getElementById('view-login').style.display = 'flex';
             } else {
-                let opts = dataStore.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
-                container.innerHTML = `<h3>Nueva Norma</h3><select id="sel-sec">${opts}</select><input id="n-t" placeholder="Título"><textarea id="n-d" placeholder="Descripción"></textarea><input id="n-i" placeholder="URL Imagen (Opcional)"><button class="btn-green" onclick="addNorma()">+ Guardar Norma</button>`;
+                document.getElementById('view-' + (v==='login'?'admin':v)).classList.add('active');
             }
-            renderAdminList();
+            toggleSidebar();
+            renderAll();
+            renderAdmin();
         }
 
-        function addSection() {
-            const n = document.getElementById('new-sec-name').value;
-            if(!n) return;
-            dataStore.push({ name: n, norms: [] });
-            saveData(); sendLog("Nueva Sección", n); switchTab(0);
+        function login() {
+            if(document.getElementById('pass').value === "pampiano17") {
+                sessionStorage.setItem('admin', true);
+                navigate('admin');
+            } else alert("Error");
         }
 
-        function addNorma() {
-            const sIdx = document.getElementById('sel-sec').value;
-            const t = document.getElementById('n-t').value;
-            const d = document.getElementById('n-d').value;
-            const i = document.getElementById('n-i').value;
-            if(!t || sIdx==="") return;
-            dataStore[sIdx].norms.push({ title: t, desc: d, img: i });
-            saveData(); sendLog("Nueva Norma", t); switchTab(1);
+        // EDITOR TOOLS
+        function wrapText(tag) {
+            const area = document.getElementById('norm-desc');
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            const text = area.value;
+            area.value = text.substring(0, start) + `<${tag}>` + text.substring(start, end) + `</${tag}>` + text.substring(end);
+        }
+
+        // IMAGEN A BASE64
+        function getBase64(file) {
+            return new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => res(reader.result);
+                reader.onerror = e => rej(e);
+            });
+        }
+
+        // GUARDAR SECCION
+        function saveSection() {
+            const name = document.getElementById('sec-name').value;
+            if(!name) return;
+            if(editing.sIdx !== null && editing.nIdx === null) {
+                db[editing.sIdx].name = name;
+                log(`Sección editada: ${name}`);
+            } else {
+                db.push({ name, norms: [] });
+                log(`Sección creada: ${name}`);
+            }
+            cancelEdit();
+            save();
+        }
+
+        // GUARDAR NORMA
+        async function saveNorma() {
+            const sIdx = document.getElementById('norm-sec-target').value;
+            const title = document.getElementById('norm-title').value;
+            const desc = document.getElementById('norm-desc').value;
+            const file = document.getElementById('norm-file').files[0];
+            let img = editing.sIdx !== null && editing.nIdx !== null ? db[editing.sIdx].norms[editing.nIdx].img : "";
+
+            if(file) img = await getBase64(file);
+
+            if(editing.sIdx !== null && editing.nIdx !== null) {
+                db[editing.sIdx].norms[editing.nIdx] = { title, desc, img };
+                log(`Norma editada: ${title}`);
+            } else {
+                db[sIdx].norms.push({ title, desc, img });
+                log(`Norma añadida: ${title}`);
+            }
+            cancelEdit();
+            save();
+        }
+
+        function editItem(s, n = null) {
+            editing = { sIdx: s, nIdx: n };
+            document.getElementById('cancel-btn').style.display = 'block';
+            if(n === null) {
+                document.getElementById('sec-name').value = db[s].name;
+            } else {
+                document.getElementById('norm-sec-target').value = s;
+                document.getElementById('norm-title').value = db[s].norms[n].title;
+                document.getElementById('norm-desc').value = db[s].norms[n].desc;
+            }
+            window.scrollTo(0,0);
+        }
+
+        function cancelEdit() {
+            editing = { sIdx: null, nIdx: null };
+            document.getElementById('sec-name').value = "";
+            document.getElementById('norm-title').value = "";
+            document.getElementById('norm-desc').value = "";
+            document.getElementById('norm-file').value = "";
+            document.getElementById('cancel-btn').style.display = 'none';
         }
 
         function deleteItem(s, n = null) {
-            if(n === null) dataStore.splice(s, 1);
-            else dataStore[s].norms.splice(n, 1);
-            saveData(); renderAdminList();
+            if(confirm("¿Seguro?")) {
+                if(n === null) db.splice(s, 1);
+                else db[s].norms.splice(n, 1);
+                save();
+            }
         }
 
-        function renderAdminList() {
-            const list = document.getElementById('admin-list-container');
-            list.innerHTML = "<h4>Gestión Actual</h4>";
-            dataStore.forEach((sec, si) => {
-                list.innerHTML += `<div class="list-item"><b>📁 ${sec.name}</b><button class="btn-del" onclick="deleteItem(${si})">🗑️</button></div>`;
-                sec.norms.forEach((nor, ni) => {
-                    list.innerHTML += `<div class="list-item" style="margin-left:20px; font-size:12px;"><span>${ni+1}. ${nor.title}</span><button class="btn-del" onclick="deleteItem(${si}, ${ni})">🗑️</button></div>`;
+        function toggleSection(idx) {
+            const el = document.getElementById('sec-' + idx);
+            const isOpen = el.style.maxHeight !== '0px';
+            document.querySelectorAll('.norms-container').forEach(c => c.style.maxHeight = '0px');
+            if(!isOpen) el.style.maxHeight = '2000px';
+        }
+
+        function renderAdmin() {
+            const list = document.getElementById('admin-list');
+            const select = document.getElementById('norm-sec-target');
+            if(!list) return;
+
+            list.innerHTML = "<h3>Gestión Actual</h3>";
+            select.innerHTML = "";
+            
+            db.forEach((s, sIdx) => {
+                select.innerHTML += `<option value="${sIdx}">${s.name}</option>`;
+                list.innerHTML += `
+                    <div class="list-item" style="border-left: 5px solid #2575fc">
+                        <b>${s.name}</b>
+                        <div>
+                            <button onclick="editItem(${sIdx})">✏️</button>
+                            <button onclick="deleteItem(${sIdx})">🗑️</button>
+                        </div>
+                    </div>`;
+                s.norms.forEach((n, nIdx) => {
+                    list.innerHTML += `
+                        <div class="list-item" style="margin-left:25px; font-size:13px; background:#f0f0f0;">
+                            <span>${nIdx+1}. ${n.title}</span>
+                            <div>
+                                <button onclick="editItem(${sIdx}, ${nIdx})">✏️</button>
+                                <button onclick="deleteItem(${sIdx}, ${nIdx})">🗑️</button>
+                            </div>
+                        </div>`;
                 });
             });
         }
 
         function renderAll() {
-            const pub = document.getElementById('content-public');
-            const query = document.getElementById('normSearch').value.toLowerCase();
-            if(!pub) return;
-            pub.innerHTML = "";
-            dataStore.forEach(sec => {
-                const normsFiltradas = sec.norms.filter((n, index) => 
-                    n.title.toLowerCase().includes(query) || 
-                    n.desc.toLowerCase().includes(query) ||
-                    (index + 1).toString() === query
-                );
+            const cont = document.getElementById('content-public');
+            const q = document.getElementById('search').value.toLowerCase();
+            if(!cont) return;
+            cont.innerHTML = "";
 
-                if(sec.name.toLowerCase().includes(query) || normsFiltradas.length > 0) {
-                    let normsHtml = normsFiltradas.map((n, index) => {
-                        // Buscamos el índice original para que el número no cambie al filtrar
-                        const originalIndex = sec.norms.indexOf(n) + 1;
-                        return `
-                        <div class="norm-card">
-                            <div style="display:flex; align-items:center; margin-bottom:10px;">
-                                <span class="norm-number">${originalIndex}</span>
-                                <b style="color:var(--primary); font-size:16px;">${n.title}</b>
-                            </div>
-                            <p style="font-size:13px; color:#666; margin:0;">${n.desc}</p>
-                            ${n.img ? `<img src="${n.img}" class="norm-img" onclick="openZoom('${n.img}')" onerror="this.style.display='none'">` : ''}
+            db.forEach((s, i) => {
+                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q) || n.desc.toLowerCase().includes(q));
+                if(s.name.toLowerCase().includes(q) || filtered.length > 0) {
+                    const colorClass = `sec-color-${i % 4}`;
+                    cont.innerHTML += `
+                        <button class="section-button ${colorClass}" onclick="toggleSection(${i})">
+                            ${s.name} <span>▼</span>
+                        </button>
+                        <div class="norms-container" id="sec-${i}" style="max-height:0px">
+                            ${filtered.map((n, ni) => `
+                                <div class="norm-card">
+                                    <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                        <span style="background:#2575fc; color:white; width:25px; height:25px; display:flex; align-items:center; justify-content:center; border-radius:5px; margin-right:10px; font-size:12px; font-weight:bold;">${s.norms.indexOf(n)+1}</span>
+                                        <b style="font-size:16px;">${n.title}</b>
+                                    </div>
+                                    <div style="font-size:14px; color:#444; line-height:1.6;">${n.desc}</div>
+                                    ${n.img ? `<img src="${n.img}" class="norm-img" onclick="showImg('${n.img}')">` : ''}
+                                </div>
+                            `).join('')}
                         </div>`;
-                    }).join('');
-                    pub.innerHTML += `<div style="margin-bottom:30px;"><h3 style="border-left:4px solid var(--primary); padding-left:12px; margin-bottom:15px;">${sec.name}</h3>${normsHtml}</div>`;
                 }
             });
         }
+
+        function showImg(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
         renderAll();
+        renderAdmin();
     </script>
 </body>
 </html>
- 
