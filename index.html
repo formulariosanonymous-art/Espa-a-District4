@@ -30,7 +30,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* SIDEBAR (SOLUCIÓN: NO ESTORBA) */
+        /* SIDEBAR (ZERO OBSTRUCTION) */
         .sidebar-overlay { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
             z-index: 1999; opacity: 0; visibility: hidden; pointer-events: none;
@@ -42,17 +42,19 @@
             position: fixed; right: -300px; top: 0; width: 280px; height: 100%; 
             background: #1e293b; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
             padding: 40px 25px; border-left: 1px solid rgba(255,255,255,0.1);
-            visibility: hidden; pointer-events: none;
+            visibility: hidden;
         }
-        .sidebar.open { right: 0; visibility: visible; pointer-events: auto; box-shadow: -15px 0 40px rgba(0,0,0,0.5); }
+        .sidebar.open { right: 0; visibility: visible; box-shadow: -15px 0 40px rgba(0,0,0,0.5); }
 
         /* VISTAS */
         .view { display: none; flex-direction: column; align-items: center; padding: 100px 20px 60px; min-height: 100vh; width: 100%; box-sizing: border-box; }
         .view.active { display: flex; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* LOGO Y UI */
+        /* LOGO */
         .logo-box { background: var(--grad); width: 90px; height: 90px; border-radius: 22px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 117, 252, 0.3); }
+        
+        /* BUSCADOR */
         .search-box { width: 100%; max-width: 600px; margin-bottom: 20px; }
         .search-box input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; color: white; width: 100%; outline: none; }
 
@@ -60,16 +62,14 @@
         .accordion-item { width: 100%; max-width: 600px; background: var(--card-bg); border-radius: 15px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
         .accordion-header { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; background: rgba(255,255,255,0.02); }
         .accordion-content { max-height: 0; overflow: hidden; transition: 0.3s ease; background: rgba(0,0,0,0.2); }
-        .accordion-item.active .accordion-content { max-height: 1000px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .accordion-item.active .accordion-content { max-height: 1500px; border-top: 1px solid rgba(255,255,255,0.05); }
 
         /* BOTONES */
-        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 14px; font-size: 14px; transition: 0.2s; }
-        .btn-primary { background: var(--grad); color: white; width: 100%; }
-        .btn-primary:active { transform: scale(0.98); }
+        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 14px; font-size: 14px; transition: 0.2s; width: 100%; }
+        .btn-primary { background: var(--grad); color: white; }
 
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; }
 
-        /* SCREENS */
         .overlay-screen { position: fixed; inset: 0; background: #0f172a; z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .glass-card { background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 340px; text-align: center; }
     </style>
@@ -95,12 +95,12 @@
         <div class="logo-box"><img id="main-logo" src="" width="60"></div>
         <h1 id="home-title" style="font-size: 32px; margin: 0;"></h1>
         <p id="home-subtitle" style="color: var(--text-dim); text-align:center; max-width:300px; margin: 15px 0 30px;"></p>
-        <button class="btn btn-primary" onclick="navigate('norms')" style="width:auto; padding: 15px 40px;">Ver Normativas</button>
+        <button class="btn btn-primary" onclick="navigate('norms')" style="width:auto; padding: 15px 40px;">Empezar Lectura</button>
     </section>
 
     <section id="view-norms" class="view">
         <h2>📜 Normativas</h2>
-        <div class="search-box"><input type="text" id="q-norms" placeholder="Buscar norma..." onkeyup="render()"></div>
+        <div class="search-box"><input type="text" id="q-norms" placeholder="¿Qué buscas?" onkeyup="render()"></div>
         <div id="norms-accordion" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </section>
 
@@ -111,83 +111,88 @@
     </section>
 
     <section id="view-admin" class="view">
-        <div style="display:flex; gap:10px; margin-bottom:20px; width:100%; max-width:600px;">
-            <button class="btn btn-primary" onclick="switchTab('adm-content', this)" style="padding:10px;">Contenido</button>
-            <button class="btn" onclick="switchTab('adm-style', this)" style="padding:10px; background:rgba(255,255,255,0.05); color:white;">🎨 Diseño</button>
-            <button class="btn" onclick="askWebhookPass(this)" style="padding:10px; background:rgba(255,255,255,0.05); color:white;">🔒 Staff</button>
+        <div style="display:flex; gap:10px; margin-bottom:20px; width:100%; max-width:600px; overflow-x:auto;">
+            <button class="btn btn-primary" onclick="switchTab('adm-content', this)">Contenido</button>
+            <button class="btn" onclick="switchTab('adm-style', this)" style="background:rgba(255,255,255,0.05); color:white;">🎨 Diseño</button>
+            <button class="btn" onclick="askWebhookPass(this)" style="background:rgba(255,255,255,0.05); color:white;">🔒 Staff</button>
         </div>
 
         <div id="adm-content" class="adm-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4 style="margin:0 0 10px">Nueva Categoría</h4>
+                <h4>Gestión de Secciones</h4>
                 <select id="adm-type-sec"><option value="norms">Normas</option><option value="gov">Gobierno</option></select>
-                <input type="text" id="adm-name-sec" placeholder="Nombre">
-                <button class="btn btn-primary" onclick="addSec()">Crear</button>
+                <input type="text" id="adm-name-sec" placeholder="Nombre de Categoría">
+                <button class="btn btn-primary" onclick="addSec()">Crear Sección</button>
             </div>
             <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4 style="margin:0 0 10px">Publicar Item</h4>
+                <h4>Nuevo Item</h4>
                 <select id="adm-sel-sec"></select>
                 <input type="text" id="adm-item-t" placeholder="Título">
                 <textarea id="adm-item-d" rows="3" placeholder="Descripción"></textarea>
-                <button class="btn btn-primary" onclick="saveItem()">Publicar</button>
+                <button class="btn btn-primary" onclick="saveItem()">Guardar Item</button>
             </div>
         </div>
 
         <div id="adm-style" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Personalización</h4>
-                <input type="text" id="st-title" placeholder="Título Ciudad">
-                <textarea id="st-sub" placeholder="Descripción"></textarea>
-                <input type="text" id="st-logo" placeholder="URL Logo PNG">
+                <h4>Apariencia</h4>
+                <input type="text" id="st-title" placeholder="Nombre Servidor">
+                <textarea id="st-sub" placeholder="Slogan"></textarea>
+                <input type="text" id="st-logo" placeholder="URL Logo (PNG)">
                 <input type="color" id="st-color" style="height:50px;">
-                <button class="btn btn-primary" onclick="updateDesign()">Guardar</button>
+                <button class="btn btn-primary" onclick="updateDesign()">Aplicar Cambios</button>
             </div>
         </div>
 
         <div id="adm-conn" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Whitelist</h4>
+                <h4>White-List Activa</h4>
                 <input type="text" id="new-staff-name" placeholder="Nombre Staff">
-                <button class="btn btn-primary" onclick="addToWhitelist()">Autorizar</button>
+                <button class="btn btn-primary" onclick="addToWhitelist()">+ Autorizar</button>
                 <div id="staff-whitelist-ui" style="margin-top:15px;"></div>
             </div>
             <div class="accordion-item" style="padding:20px; max-height:none;">
-                <h4>Discord Webhook</h4>
-                <input type="text" id="cfg-webhook" placeholder="URL">
+                <h4>Historial de Expulsados</h4>
+                <p style="font-size:11px; opacity:0.6; margin-bottom:10px;">Estas personas no pueden entrar aunque tengan la llave maestra.</p>
+                <div id="staff-banned-ui"></div>
+            </div>
+            <div class="accordion-item" style="padding:20px; max-height:none;">
+                <h4>Logs Discord</h4>
+                <input type="text" id="cfg-webhook" placeholder="Webhook URL">
                 <button class="btn btn-primary" onclick="saveCfg()">Vincular</button>
             </div>
-            <button class="btn" onclick="logout()" style="background:#ff4757; color:white; width:100%; max-width:600px; margin-top:20px;">Cerrar Sesión</button>
+            <button class="btn" onclick="logout()" style="background:#ff4757; color:white; margin-top:20px;">Cerrar Sesión</button>
         </div>
     </section>
 
     <div id="master-gate-screen" class="overlay-screen">
         <div class="glass-card">
-            <h2>Panel Staff</h2>
+            <h2>Acceso Staff</h2>
             <input type="password" id="gate-pass" placeholder="Llave Maestra" style="text-align:center;">
             <button class="btn btn-primary" onclick="checkGate()" style="margin-top:10px;">Verificar</button>
-            <p onclick="closeAllScreens()" style="margin-top:15px; cursor:pointer; opacity:0.5;">Volver</p>
+            <p onclick="closeAllScreens()" style="margin-top:15px; cursor:pointer; opacity:0.5;">Cerrar</p>
         </div>
     </div>
 
     <div id="staff-init-screen" class="overlay-screen">
         <div class="glass-card">
-            <h2>Identificación</h2>
-            <input type="text" id="st-name" placeholder="Nombre">
-            <input type="text" id="st-range" placeholder="Rango">
-            <button class="btn btn-primary" onclick="registerStaff()">Continuar</button>
+            <h2>Registro Staff</h2>
+            <input type="text" id="st-name" placeholder="Tu Nombre">
+            <input type="text" id="st-range" placeholder="Tu Rango">
+            <button class="btn btn-primary" onclick="registerStaff()">Registrar y Entrar</button>
         </div>
     </div>
 
     <div id="login-screen" class="overlay-screen">
         <div class="glass-card">
             <h2 id="welcome-staff"></h2>
-            <input type="password" id="ses-pass" placeholder="Clave Panel" style="text-align:center;">
-            <button class="btn btn-primary" onclick="finalLogin()">Entrar</button>
+            <input type="password" id="ses-pass" placeholder="Contraseña Panel" style="text-align:center;">
+            <button class="btn btn-primary" onclick="finalLogin()" style="margin-top:10px;">Entrar</button>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('ed_db_final')) || { norms: [], gov: [], whitelist: [] };
+        let db = JSON.parse(localStorage.getItem('ed_db_final')) || { norms: [], gov: [], whitelist: [], banned: [] };
         let cfg = JSON.parse(localStorage.getItem('ed_cfg_final')) || { title: "España District", sub: "Portal de Información", logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png", color: "#2575fc", webhook: "", passA: "ESP123", passW: "Pampigod" };
         let user = JSON.parse(localStorage.getItem('ed_user')) || null;
 
@@ -203,63 +208,89 @@
             render();
         }
 
-        // --- SISTEMA MENÚ (CORREGIDO) ---
-        function openSidebar() { 
-            document.getElementById('sidebar').classList.add('open'); 
-            document.getElementById('overlay').classList.add('active'); 
-        }
-        function closeSidebar() { 
-            document.getElementById('sidebar').classList.remove('open'); 
-            document.getElementById('overlay').classList.remove('active'); 
-        }
-        function navigate(v) { 
-            document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); 
-            document.getElementById('view-'+v).classList.add('active'); 
-            closeSidebar(); 
-        }
-
-        // --- ACCESO ---
+        // --- NAVEGACIÓN ---
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
+        function navigate(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); closeSidebar(); }
         function openAdmin() { closeSidebar(); document.getElementById('master-gate-screen').style.display = 'flex'; }
         function closeAllScreens() { document.querySelectorAll('.overlay-screen').forEach(s => s.style.display='none'); }
 
+        // --- LÓGICA DE ACCESO ---
         function checkGate() {
             if(document.getElementById('gate-pass').value === "pampiano17") {
                 document.getElementById('master-gate-screen').style.display = 'none';
-                if(!user) document.getElementById('staff-init-screen').style.display = 'flex';
-                else checkAuth();
-            } else alert("Error");
+                document.getElementById('gate-pass').value = "";
+                
+                if(!user) {
+                    document.getElementById('staff-init-screen').style.display = 'flex';
+                } else {
+                    if(db.banned && db.banned.includes(user.name)) {
+                        alert("No estás autorizado.");
+                        location.reload();
+                    } else {
+                        document.getElementById('welcome-staff').innerText = "Hola, " + user.name;
+                        document.getElementById('login-screen').style.display = 'flex';
+                    }
+                }
+            } else alert("Llave incorrecta");
         }
 
         function registerStaff() {
             const n = document.getElementById('st-name').value;
             if(!n) return;
+            if(db.banned && db.banned.includes(n)) {
+                alert("No estás autorizado.");
+                location.reload();
+                return;
+            }
             user = { name: n, range: document.getElementById('st-range').value };
             localStorage.setItem('ed_user', JSON.stringify(user));
-            if(db.whitelist.length === 0) db.whitelist.push(n); // Primer admin
+            if(!db.whitelist.includes(n)) db.whitelist.push(n);
+            save();
             document.getElementById('staff-init-screen').style.display = 'none';
-            checkAuth();
-        }
-
-        function checkAuth() {
-            if(db.whitelist.includes(user.name)) {
-                document.getElementById('welcome-staff').innerText = "Hola, " + user.name;
-                document.getElementById('login-screen').style.display = 'flex';
-            } else {
-                alert("No estás autorizado.");
-                closeAllScreens();
-            }
+            document.getElementById('welcome-staff').innerText = "Bienvenido, " + n;
+            document.getElementById('login-screen').style.display = 'flex';
         }
 
         function finalLogin() {
             if(document.getElementById('ses-pass').value === cfg.passA) {
                 document.getElementById('login-screen').style.display = 'none';
                 navigate('admin');
-            } else alert("Error");
+            } else alert("Contraseña incorrecta");
         }
 
-        function logout() { localStorage.removeItem('ed_user'); user = null; location.reload(); }
+        function logout() { localStorage.removeItem('ed_user'); location.reload(); }
 
-        // --- RENDERING ---
+        // --- FUNCIONES STAFF ---
+        function addToWhitelist() {
+            const n = document.getElementById('new-staff-name').value;
+            if(n && !db.whitelist.includes(n)) {
+                db.whitelist.push(n);
+                if(db.banned) db.banned = db.banned.filter(b => b !== n);
+                save();
+                sendDiscord("👥 Whitelist", `**${user.name}** autorizó a **${n}**.`);
+            }
+        }
+
+        function removeFromWhitelist(i) {
+            const name = db.whitelist[i];
+            if(confirm("¿Expulsar a " + name + "? Ya no podrá entrar.")) {
+                if(!db.banned) db.banned = [];
+                db.banned.push(name);
+                db.whitelist.splice(i, 1);
+                save();
+                sendDiscord("🚫 Expulsión", `**${user.name}** expulsó a **${name}**.`);
+            }
+        }
+
+        function unbanStaff(i) {
+            const name = db.banned[i];
+            db.banned.splice(i, 1);
+            db.whitelist.push(name);
+            save();
+            sendDiscord("✅ Perdón", `**${user.name}** ha perdonado a **${name}**.`);
+        }
+
         function render() {
             const nA = document.getElementById('norms-accordion');
             const gA = document.getElementById('gov-accordion');
@@ -274,7 +305,6 @@
                     const box = (type === 'norms') ? nA : gA;
                     const query = (type === 'norms') ? qN : qG;
                     const items = sec.items.filter(it => it.title.toLowerCase().includes(query));
-                    
                     if(items.length > 0 || query === "") {
                         let h = `<div class="accordion-item"><div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">${sec.name} <span>▼</span></div><div class="accordion-content">`;
                         items.forEach(it => h += `<div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05);"><b>${it.title}</b><p style="font-size:13px; color:var(--text-dim); margin-top:5px;">${it.desc}</p></div>`);
@@ -285,16 +315,18 @@
             });
 
             document.getElementById('staff-whitelist-ui').innerHTML = db.whitelist.map((n, i) => `
-                <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:5px;">
-                    ${n} <span onclick="removeFromWhitelist(${i})" style="color:#ff4757; cursor:pointer;">ELIMINAR</span>
+                <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:5px; font-size:13px;">
+                    ${n} <span onclick="removeFromWhitelist(${i})" style="color:#ff4757; cursor:pointer; font-weight:bold;">EXPULSAR</span>
                 </div>`).join('');
+
+            document.getElementById('staff-banned-ui').innerHTML = (db.banned || []).map((n, i) => `
+                <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,71,87,0.1); border-radius:10px; margin-bottom:5px; font-size:13px; border:1px solid rgba(255,71,87,0.2);">
+                    ${n} <span onclick="unbanStaff(${i})" style="color:#2ecc71; cursor:pointer; font-weight:bold;">PERDONAR</span>
+                </div>`).join('') || '<p style="font-size:12px; opacity:0.4;">No hay expulsados.</p>';
         }
 
-        // --- ACCIONES ---
         function addSec() { const t = document.getElementById('adm-type-sec').value; const n = document.getElementById('adm-name-sec').value; if(n) db[t].push({ name: n, items: [] }); save(); }
         function saveItem() { const v = document.getElementById('adm-sel-sec').value.split('-'); db[v[0]][v[1]].items.push({ title: document.getElementById('adm-item-t').value, desc: document.getElementById('adm-item-d').value }); save(); }
-        function addToWhitelist() { const n = document.getElementById('new-staff-name').value; if(n && !db.whitelist.includes(n)) { db.whitelist.push(n); sendDiscord("👥 Whitelist", `**${user.name}** aceptó a **${n}**.`); save(); } }
-        function removeFromWhitelist(i) { const name = db.whitelist[i]; db.whitelist.splice(i, 1); sendDiscord("🚫 Expulsión", `**${user.name}** expulsó a **${name}**.`); save(); }
         function updateDesign() { cfg.title = document.getElementById('st-title').value; cfg.sub = document.getElementById('st-sub').value; cfg.logo = document.getElementById('st-logo').value; cfg.color = document.getElementById('st-color').value; localStorage.setItem('ed_cfg_final', JSON.stringify(cfg)); init(); }
         function saveCfg() { cfg.webhook = document.getElementById('cfg-webhook').value; localStorage.setItem('ed_cfg_final', JSON.stringify(cfg)); alert("Vinculado"); }
         function save() { localStorage.setItem('ed_db_final', JSON.stringify(db)); render(); }
@@ -310,4 +342,3 @@
     </script>
 </body>
 </html>
- 
