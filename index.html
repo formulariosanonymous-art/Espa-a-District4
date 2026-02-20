@@ -3,150 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Standards Portal</title>
+    <title>España District | Sistema de Normas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #ff8a00, #ff4e00);
-            --admin-bg: linear-gradient(180deg, #4c1d95, #1e1b4b);
-            --bg: #fdfbf9;
-            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --primary: #ff8a00;
+            --gradient: linear-gradient(135deg, #ff8a00, #ff4e00);
+            --bg: #f8f9fb;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
-        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; -webkit-tap-highlight-color: transparent; }
 
-        /* MENU HAMBURGUESA */
-        .menu-btn { position: fixed; top: 20px; right: 20px; background: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; z-index: 1000; font-size: 20px; }
+        /* HEADER */
+        .header-controls { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        .menu-icon { background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); cursor: pointer; border: none; font-size: 20px; }
 
-        /* SIDEBAR NAVEGACIÓN (Foto 1000108041) */
-        #sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: white; z-index: 999; transition: 0.4s; padding: 60px 24px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
-        #sidebar.open { right: 0; }
-        .nav-link { display: flex; align-items: center; gap: 15px; padding: 15px; text-decoration: none; color: #444; border-radius: 12px; margin-bottom: 10px; font-weight: 500; }
-        .nav-link.active { background: var(--primary-gradient); color: white; }
+        /* SIDEBAR */
+        .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: var(--white); z-index: 999; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 60px 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+        .sidebar.open { right: 0; }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 15px; text-decoration: none; color: #555; border-radius: 12px; margin-bottom: 10px; font-weight: 500; cursor: pointer; }
+        .nav-item.active { background: var(--gradient); color: var(--white); box-shadow: 0 5px 15px rgba(255, 138, 0, 0.3); }
 
-        /* VISTA INICIO (Foto 1000108040) */
-        #view-home { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; text-align: center; }
-        .logo { width: 160px; height: 160px; border-radius: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        h1 { font-size: 3rem; margin: 0; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        
-        .card { background: white; border-radius: 22px; padding: 30px; width: 100%; max-width: 360px; margin-bottom: 15px; box-shadow: var(--shadow); }
-        .btn-orange { background: var(--primary-gradient); color: white; padding: 16px 40px; border-radius: 35px; border: none; font-weight: 700; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 78, 0, 0.2); }
+        /* VISTAS */
+        .view { display: none; flex-direction: column; align-items: center; padding: 40px 20px; animation: fadeIn 0.3s ease; min-height: 100vh; box-sizing: border-box; }
+        .view.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOGIN (Foto 1000108042) */
-        #view-login { display: none; height: 100vh; background: var(--admin-bg); justify-content: center; align-items: center; }
-        .login-card { background: white; padding: 40px; border-radius: 28px; width: 90%; max-width: 380px; text-align: center; }
+        /* BUSCADOR */
+        .search-container { width: 100%; max-width: 450px; margin-bottom: 20px; position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 10px 0; }
+        .search-input { width: 100%; padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: var(--shadow); font-size: 14px; outline: none; }
 
-        /* PANEL ADMIN (Fotos 1000108043-45) */
-        #view-admin { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
-        .tabs { display: flex; background: #eee; padding: 5px; border-radius: 12px; margin: 20px 0; }
-        .tab { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; border-radius: 10px; font-weight: 600; color: #777; }
-        .tab.active { background: white; color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        
-        .admin-box { background: white; border-radius: 20px; padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; }
-        .btn-add { width: 100%; padding: 15px; border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; }
+        /* NORMAS ENUMERADAS */
+        .norm-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #eee; text-align: left; position: relative; }
+        .norm-number { background: var(--gradient); color: white; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; margin-right: 10px; vertical-align: middle; }
+        .norm-img { width: 100%; border-radius: 12px; margin-top: 15px; cursor: zoom-in; transition: 0.2s; }
+        .norm-img:hover { opacity: 0.9; }
 
-        /* ESTILO NORMAS EXISTENTES */
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
-        .btn-del { color: #ff4e4e; background: #fff2f2; border: none; padding: 8px; border-radius: 8px; cursor: pointer; }
+        /* MODAL IMAGEN */
+        #imgModal { display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; }
+        #imgModal img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+
+        /* ADMIN */
+        .admin-card { background: white; border-radius: 24px; padding: 25px; box-shadow: var(--shadow); width: 100%; max-width: 500px; box-sizing: border-box; margin-bottom: 20px; }
+        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-family: inherit; box-sizing: border-box; }
+        .btn-green { width: 100%; padding: 16px; border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; background: #2ecc71; }
+        .btn-del { background: #fff2f2; color: #ff4e4e; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
+        .list-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
+
+        .login-bg { position: fixed; inset: 0; background: linear-gradient(180deg, #4c1d95, #1e1b4b); display: none; align-items: center; justify-content: center; z-index: 2000; }
     </style>
 </head>
 <body>
 
-    <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-
-    <div id="sidebar">
-        <h2>Navegación</h2>
-        <a href="#" class="nav-link active" onclick="showView('home')">🏠 Inicio</a>
-        <a href="#" class="nav-link" onclick="showView('home')">📄 Secciones</a>
-        <a href="#" class="nav-link" onclick="showView('login')">⚙️ Admin Panel</a>
+    <div class="header-controls">
+        <button class="menu-icon" onclick="toggleSidebar()">☰</button>
     </div>
 
-    <section id="view-home">
-        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" class="logo">
-        <h1>España District</h1>
-        <p style="color: #888;">Bienvenid@ a las normas de España District</p>
-        <div class="card">
-            <h3>Normas Claras</h3>
-            <p style="font-size: 13px; color: #999;">Accede a todas las normas organizadas.</p>
-        </div>
-        <button class="btn-orange">Ver Normas →</button>
+    <div id="imgModal" onclick="this.style.display='none'">
+        <img id="imgModalSrc" src="">
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <h2 style="margin:0">Navegación</h2>
+        <p style="color:#ccc; font-size:12px; margin-bottom:30px;">España District</p>
+        <div class="nav-item" id="nav-home" onclick="navigate('home')">🏠 Inicio</div>
+        <div class="nav-item" id="nav-public" onclick="navigate('public')">📄 Secciones</div>
+        <div class="nav-item" id="nav-login" onclick="navigate('login')">⚙️ Admin Panel</div>
+    </div>
+
+    <section id="view-home" class="view active">
+        <img src="https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png" style="width:140px; border-radius:25px; box-shadow:var(--shadow); margin-bottom:20px;">
+        <h1 style="background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:35px; margin:0;">España District</h1>
+        <button class="btn-orange" onclick="navigate('public')" style="background:var(--gradient); color:white; border:none; padding:16px 40px; border-radius:35px; font-weight:700; cursor:pointer; margin-top:20px;">Ver Normas →</button>
     </section>
 
-    <section id="view-login">
-        <div class="login-card">
-            <div style="background:var(--primary-gradient); width:60px; height:60px; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; color:white; font-size:24px;">🔒</div>
-            <h2>Admin Panel</h2>
-            <input type="password" id="pass" placeholder="Contraseña">
-            <button class="btn-orange" style="width:100%" onclick="login()">Acceder</button>
+    <section id="view-public" class="view">
+        <div class="search-container">
+            <input type="text" class="search-input" id="normSearch" placeholder="🔍 Buscar por nombre o número..." onkeyup="renderAll()">
         </div>
+        <div id="content-public" style="width:100%; max-width:450px;"></div>
     </section>
 
-    <section id="view-admin">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>Panel de Administración</h2>
-            <button onclick="showView('home')" style="border:none; background:none; color:red; cursor:pointer;">Cerrar Sesión</button>
+    <div id="view-login" class="login-bg">
+        <div style="background:white; padding:40px; border-radius:30px; text-align:center; width:90%; max-width:360px;">
+            <h2>Panel Administrativo</h2>
+            <input type="password" id="adminPass" placeholder="Contraseña">
+            <button class="btn-green" style="background:var(--gradient)" onclick="checkLogin()">Entrar</button>
+            <p onclick="navigate('home')" style="color:gray; font-size:12px; cursor:pointer; margin-top:15px;">Volver</p>
         </div>
-        <div class="tabs">
-            <button class="tab active">Secciones</button>
-            <button class="tab">Normas</button>
-            <button class="tab">Configuración</button>
-        </div>
+    </div>
 
-        <div class="admin-box">
-            <h3>Gestionar Contenido</h3>
-            <input type="text" id="new-item" placeholder="Nombre del elemento...">
-            <button class="btn-add" style="background:#2ecc71" onclick="handleAction('Añadir')">+ Agregar</button>
-        </div>
-
-        <div class="admin-box">
-            <h4>Elementos Existentes</h4>
-            <div class="item-row">
-                <span>Normas Generales</span>
-                <button class="btn-del" onclick="handleAction('Eliminar', 'Normas Generales')">🗑️</button>
+    <section id="view-admin" class="view">
+        <div style="width:100%; max-width:500px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h2>Configuración</h2>
+                <button onclick="navigate('home')" style="color:red; background:none; border:none; font-weight:700; cursor:pointer;">Cerrar</button>
             </div>
+            <div style="display:flex; background:#eee; padding:5px; border-radius:14px; margin-bottom:20px;">
+                <button class="tab active" id="tab0" onclick="switchTab(0)" style="flex:1; padding:10px; border:none; border-radius:10px; cursor:pointer;">Secciones</button>
+                <button class="tab" id="tab1" onclick="switchTab(1)" style="flex:1; padding:10px; border:none; border-radius:10px; cursor:pointer;">Normas</button>
+            </div>
+            <div id="admin-form-container" class="admin-card"></div>
+            <div id="admin-list-container"></div>
         </div>
     </section>
 
     <script>
-        const WEBHOOK = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1474271939697705111/beTyfVivPaHokNQvnPw5SSkaY74Yb6C1SCKBNpj-SM2EfXBBhNT-YtvlecFYCkl4vAR4";
+        let dataStore = JSON.parse(localStorage.getItem('espana_data')) || [];
+
+        function saveData() {
+            localStorage.setItem('espana_data', JSON.stringify(dataStore));
+            renderAll();
+        }
 
         async function sendLog(accion, detalle) {
-            const data = {
-                embeds: [{
-                    title: "LOG DE PANEL - España District",
-                    description: `**Acción:** ${accion}\n**Detalle:** ${detalle}`,
-                    color: accion === 'Eliminar' ? 15548997 : 5763719,
-                    timestamp: new Date()
-                }]
-            };
-            await fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    embeds: [{ title: "España District Logs", description: `**${accion}:** ${detalle}`, color: 16747008, timestamp: new Date() }]
+                })
+            });
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        function showView(v) {
-            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-            const view = document.getElementById('view-' + v);
-            view.style.display = (v === 'admin' || v === 'home') ? 'block' : 'flex';
-            if(v === 'home') view.style.display = 'flex';
+        function navigate(v) {
+            document.querySelectorAll('.view').forEach(s => s.classList.remove('active'));
+            document.getElementById('view-login').style.display = 'none';
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if(v === 'login') { document.getElementById('view-login').style.display = 'flex'; }
+            else { document.getElementById('view-'+v).classList.add('active'); document.getElementById('nav-'+v).classList.add('active'); }
             document.getElementById('sidebar').classList.remove('open');
+            renderAll();
         }
 
-        function login() {
-            if(document.getElementById('pass').value === "pampiano17") {
-                sendLog("Inicio de Sesión", "El Staff ha entrado al panel de control.");
-                showView('admin');
-            } else { alert("Error"); }
+        function checkLogin() {
+            if(document.getElementById('adminPass').value === "pampiano17") { navigate('admin'); switchTab(0); }
+            else alert("Error");
         }
 
-        function handleAction(tipo, nombre) {
-            const item = nombre || document.getElementById('new-item').value;
-            if(!item) return;
-            sendLog(tipo, `Se ha procesado: **${item}**`);
-            alert(`${tipo} realizado con éxito (Verificado en Discord)`);
+        function openZoom(src) {
+            document.getElementById('imgModalSrc').src = src;
+            document.getElementById('imgModal').style.display = 'flex';
         }
+
+        function switchTab(t) {
+            document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', i === t));
+            const container = document.getElementById('admin-form-container');
+            if(t === 0) {
+                container.innerHTML = `<h3>Nueva Sección</h3><input id="new-sec-name" placeholder="Ej: Normas Civiles"><button class="btn-green" onclick="addSection()">+ Crear Sección</button>`;
+            } else {
+                let opts = dataStore.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
+                container.innerHTML = `<h3>Nueva Norma</h3><select id="sel-sec">${opts}</select><input id="n-t" placeholder="Título"><textarea id="n-d" placeholder="Descripción"></textarea><input id="n-i" placeholder="URL Imagen (Opcional)"><button class="btn-green" onclick="addNorma()">+ Guardar Norma</button>`;
+            }
+            renderAdminList();
+        }
+
+        function addSection() {
+            const n = document.getElementById('new-sec-name').value;
+            if(!n) return;
+            dataStore.push({ name: n, norms: [] });
+            saveData(); sendLog("Nueva Sección", n); switchTab(0);
+        }
+
+        function addNorma() {
+            const sIdx = document.getElementById('sel-sec').value;
+            const t = document.getElementById('n-t').value;
+            const d = document.getElementById('n-d').value;
+            const i = document.getElementById('n-i').value;
+            if(!t || sIdx==="") return;
+            dataStore[sIdx].norms.push({ title: t, desc: d, img: i });
+            saveData(); sendLog("Nueva Norma", t); switchTab(1);
+        }
+
+        function deleteItem(s, n = null) {
+            if(n === null) dataStore.splice(s, 1);
+            else dataStore[s].norms.splice(n, 1);
+            saveData(); renderAdminList();
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-list-container');
+            list.innerHTML = "<h4>Gestión Actual</h4>";
+            dataStore.forEach((sec, si) => {
+                list.innerHTML += `<div class="list-item"><b>📁 ${sec.name}</b><button class="btn-del" onclick="deleteItem(${si})">🗑️</button></div>`;
+                sec.norms.forEach((nor, ni) => {
+                    list.innerHTML += `<div class="list-item" style="margin-left:20px; font-size:12px;"><span>${ni+1}. ${nor.title}</span><button class="btn-del" onclick="deleteItem(${si}, ${ni})">🗑️</button></div>`;
+                });
+            });
+        }
+
+        function renderAll() {
+            const pub = document.getElementById('content-public');
+            const query = document.getElementById('normSearch').value.toLowerCase();
+            if(!pub) return;
+            pub.innerHTML = "";
+            dataStore.forEach(sec => {
+                const normsFiltradas = sec.norms.filter((n, index) => 
+                    n.title.toLowerCase().includes(query) || 
+                    n.desc.toLowerCase().includes(query) ||
+                    (index + 1).toString() === query
+                );
+
+                if(sec.name.toLowerCase().includes(query) || normsFiltradas.length > 0) {
+                    let normsHtml = normsFiltradas.map((n, index) => {
+                        // Buscamos el índice original para que el número no cambie al filtrar
+                        const originalIndex = sec.norms.indexOf(n) + 1;
+                        return `
+                        <div class="norm-card">
+                            <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                <span class="norm-number">${originalIndex}</span>
+                                <b style="color:var(--primary); font-size:16px;">${n.title}</b>
+                            </div>
+                            <p style="font-size:13px; color:#666; margin:0;">${n.desc}</p>
+                            ${n.img ? `<img src="${n.img}" class="norm-img" onclick="openZoom('${n.img}')" onerror="this.style.display='none'">` : ''}
+                        </div>`;
+                    }).join('');
+                    pub.innerHTML += `<div style="margin-bottom:30px;"><h3 style="border-left:4px solid var(--primary); padding-left:12px; margin-bottom:15px;">${sec.name}</h3>${normsHtml}</div>`;
+                }
+            });
+        }
+        renderAll();
     </script>
 </body>
 </html>
-
+ 
