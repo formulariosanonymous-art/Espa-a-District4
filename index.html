@@ -28,10 +28,10 @@
 
         /* SIDEBAR & OVERLAY */
         .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.2);
-            z-index: 1999; visibility: hidden; opacity: 0; transition: 0.3s;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 1999; display: none; opacity: 0; transition: 0.3s;
         }
-        .sidebar-overlay.active { visibility: visible; opacity: 1; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
 
         .sidebar { 
             position: fixed; right: -320px; top: 0; width: 300px; height: 100%; 
@@ -49,7 +49,7 @@
         .nav-item:hover { background: #f1f5f9; color: var(--primary); transform: translateX(-5px); }
 
         /* VISTAS */
-        .view { display: none; flex-direction: column; align-items: center; padding: 100px 20px 40px; min-height: 100vh; box-sizing: border-box; }
+        .view { display: none; flex-direction: column; align-items: center; padding: 100px 20px 40px; min-height: 100vh; box-sizing: border-box; width: 100%; }
         .view.active { display: flex; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -61,18 +61,16 @@
         }
 
         .btn { border: none; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--grad); color: white; padding: 14px 28px; }
+        .btn-primary { background: var(--grad); color: white; padding: 14px 28px; font-size: 14px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 117, 252, 0.3); }
-        .btn-danger { background: #fee2e2; color: #ef4444; padding: 8px 12px; border-radius: 10px; font-size: 12px; }
 
         input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; background: #fff; font-family: inherit; box-sizing: border-box; }
-
-        /* TABS */
-        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 500px; padding: 5px; }
-        .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        
+        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 500px; padding: 5px; scrollbar-width: none; }
+        .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        #login-screen { position: fixed; inset: 0; background: var(--grad); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        #login-screen { position: fixed; inset: 0; background: var(--grad); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -87,7 +85,7 @@
     <div class="sidebar" id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
             <span style="font-weight: 800; color: var(--primary); font-size: 12px;">MENÚ</span>
-            <button onclick="closeSidebar()" style="background:none; border:none; font-size: 28px; cursor:pointer; color:#cbd5e1;">×</button>
+            <button onclick="closeSidebar()" style="background:none; border:none; font-size: 28px; cursor:pointer; color:#cbd5e1;">&times;</button>
         </div>
         <div class="nav-item" onclick="navigate('home')">🏠 Inicio</div>
         <div class="nav-item" onclick="navigate('public')">📜 Normativas</div>
@@ -95,14 +93,14 @@
     </div>
 
     <section id="view-home" class="view active">
-        <img id="main-logo" src="" width="150" style="margin-bottom:20px;">
-        <h1 id="home-title" style="font-size: 36px; margin:0; text-align:center;"></h1>
-        <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px; margin: 15px 0 25px;"></p>
+        <img id="main-logo" src="" width="160" style="margin-bottom:20px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));">
+        <h1 id="home-title" style="font-size: 38px; margin:0; text-align:center;"></h1>
+        <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px; margin: 15px 0 30px;"></p>
         <button class="btn btn-primary" onclick="navigate('public')">Ver Normas →</button>
     </section>
 
     <section id="view-public" class="view">
-        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px; margin-bottom:20px;">
+        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px;">
         <div id="public-content" style="width:100%; max-width:500px;"></div>
     </section>
 
@@ -111,14 +109,14 @@
             <button class="tab-btn active" onclick="switchTab('tab-sections', this)">Categorías</button>
             <button class="tab-btn" onclick="switchTab('tab-norms', this)">Normas</button>
             <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Diseño</button>
-            <button class="tab-btn" onclick="askWebhookPass(this)">🔗 Webhooks</button>
+            <button class="tab-btn" onclick="askWebhookPass(this)">🔗 Conexiones</button>
         </div>
 
         <div id="tab-sections" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Crear Nueva Categoría</h3>
-                <input type="text" id="new-sec-name" placeholder="Ej: Normas Civiles">
-                <button class="btn btn-primary" style="width:100%" onclick="addSection()">+ Crear Categoría</button>
+                <h3>Crear Categoría</h3>
+                <input type="text" id="new-sec-name" placeholder="Nombre de sección">
+                <button class="btn btn-primary" style="width:100%" onclick="addSection()">+ Crear</button>
             </div>
             <div id="list-sections" style="width:100%; max-width:500px;"></div>
         </div>
@@ -127,10 +125,10 @@
             <div class="card">
                 <h3>Añadir Norma</h3>
                 <select id="norm-target-sec"></select>
-                <input type="text" id="norm-title" placeholder="Título de la norma">
-                <textarea id="norm-desc" rows="3" placeholder="Descripción de la regla..."></textarea>
+                <input type="text" id="norm-title" placeholder="Título">
+                <textarea id="norm-desc" rows="3" placeholder="Descripción..."></textarea>
                 <input type="file" id="norm-file" accept="image/*">
-                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Guardar Norma</button>
+                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Guardar</button>
             </div>
             <div id="list-norms-edit" style="width:100%; max-width:500px;"></div>
         </div>
@@ -139,17 +137,29 @@
             <div class="card">
                 <h3>Estética de Inicio</h3>
                 <input type="text" id="set-title" placeholder="Título">
+                <textarea id="set-subtitle" placeholder="Descripción..."></textarea>
                 <input type="text" id="set-logo" placeholder="URL del Logo">
-                <textarea id="set-subtitle" placeholder="Subtítulo..."></textarea>
                 <button class="btn btn-primary" style="width:100%" onclick="updateStyles()">Aplicar Diseño</button>
             </div>
         </div>
 
         <div id="tab-webhooks" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card" style="border: 2px solid #5865F2;">
-                <h3 style="color:#5865F2;">Discord Logs</h3>
+                <h3 style="color:#5865F2;">Discord Webhook</h3>
                 <input type="text" id="set-webhook" placeholder="URL del Webhook">
-                <button class="btn btn-primary" style="width:100%; background:#5865F2;" onclick="saveWebhook()">Guardar Conexión</button>
+                <button class="btn btn-primary" style="width:100%; background:#5865F2;" onclick="saveWebhook()">Guardar Webhook</button>
+            </div>
+            <div class="card">
+                <h3>🔑 Seguridad del Sistema</h3>
+                <label style="font-size:12px; font-weight:700;">Contraseña Admin Panel:</label>
+                <input type="text" id="set-pass-admin" placeholder="Nueva clave Admin">
+                <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="updatePass('admin')">Cambiar Clave Admin</button>
+                
+                <hr style="opacity:0.1; margin: 10px 0;">
+                
+                <label style="font-size:12px; font-weight:700;">Contraseña de esta sección (Conexiones):</label>
+                <input type="text" id="set-pass-web" placeholder="Nueva clave Conexiones">
+                <button class="btn btn-primary" style="width:100%" onclick="updatePass('web')">Cambiar Clave Conexiones</button>
             </div>
         </div>
     </section>
@@ -157,22 +167,24 @@
     <div id="login-screen">
         <div class="card" style="max-width:350px; text-align:center;">
             <h2>Staff Access</h2>
-            <input type="password" id="admin-pass" placeholder="Contraseña">
+            <input type="password" id="admin-pass-input" placeholder="Contraseña">
             <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Entrar</button>
-            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px; font-weight:700;">CANCELAR</p>
+            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px;">CANCELAR</p>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('esp_v11')) || [];
-        let config = JSON.parse(localStorage.getItem('esp_cfg_v11')) || {
+        let db = JSON.parse(localStorage.getItem('esp_db_v13')) || [];
+        let config = JSON.parse(localStorage.getItem('esp_cfg_v13')) || {
             title: "España District",
-            sub: "Centro oficial de normativas.",
+            sub: "Tu portal oficial de normativas.",
             logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png",
-            webhook: ""
+            webhook: "",
+            passAdmin: "ESP123",
+            passWeb: "Pampigod"
         };
 
-        function applyConfig() {
+        function init() {
             document.getElementById('home-title').innerText = config.title;
             document.getElementById('home-subtitle').innerText = config.sub;
             document.getElementById('main-logo').src = config.logo;
@@ -180,95 +192,113 @@
             document.getElementById('set-subtitle').value = config.sub;
             document.getElementById('set-logo').value = config.logo;
             document.getElementById('set-webhook').value = config.webhook;
+            render();
         }
 
-        // SECCIONES
+        function openSidebar() { 
+            document.getElementById('sidebar').classList.add('open'); 
+            document.getElementById('overlay').style.display = 'block'; 
+            setTimeout(() => document.getElementById('overlay').classList.add('active'), 10);
+        }
+        function closeSidebar() { 
+            document.getElementById('sidebar').classList.remove('open'); 
+            document.getElementById('overlay').classList.remove('active');
+            setTimeout(() => document.getElementById('overlay').style.display = 'none', 300);
+        }
+        function navigate(v) {
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+            document.getElementById('view-' + v).classList.add('active');
+            closeSidebar();
+        }
+
+        function openAdmin() { closeSidebar(); document.getElementById('login-screen').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
+        function checkPass() {
+            if(document.getElementById('admin-pass-input').value === config.passAdmin) {
+                closeLogin(); navigate('admin');
+                document.getElementById('admin-pass-input').value = "";
+            } else { alert("Error"); }
+        }
+        function askWebhookPass(btn) {
+            const p = prompt("Introduce la clave de Conexiones:");
+            if(p === config.passWeb) switchTab('tab-webhooks', btn);
+            else if(p !== null) alert("Incorrecta");
+        }
+
+        function updatePass(type) {
+            const val = type === 'admin' ? document.getElementById('set-pass-admin').value : document.getElementById('set-pass-web').value;
+            if(!val) return alert("Escribe la clave");
+            if(type === 'admin') config.passAdmin = val; else config.passWeb = val;
+            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
+            alert("Contraseña guardada");
+        }
+
+        function updateStyles() {
+            config.title = document.getElementById('set-title').value;
+            config.sub = document.getElementById('set-subtitle').value;
+            config.logo = document.getElementById('set-logo').value;
+            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
+            init();
+            alert("Cambios aplicados");
+        }
+
+        function saveWebhook() {
+            config.webhook = document.getElementById('set-webhook').value;
+            localStorage.setItem('esp_cfg_v13', JSON.stringify(config));
+            alert("Webhook guardado");
+        }
+
         function addSection() {
-            const name = document.getElementById('new-sec-name').value;
-            if(!name) return;
-            db.push({name: name, norms: []});
+            const n = document.getElementById('new-sec-name').value;
+            if(!n) return;
+            db.push({name: n, norms: []});
             document.getElementById('new-sec-name').value = "";
-            save();
-            sendLog("📁 Nueva Categoría", `Se ha creado la sección: **${name}**`);
+            saveDB();
         }
+        function deleteSection(i) { if(confirm("¿Borrar todo?")) { db.splice(i, 1); saveDB(); } }
 
-        function deleteSection(i) {
-            if(confirm("¿Borrar sección y todas sus normas?")) {
-                sendLog("🗑️ Sección Eliminada", `Se borró: **${db[i].name}**`);
-                db.splice(i, 1);
-                save();
-            }
-        }
-
-        // NORMAS
         async function saveNorma() {
             const sIdx = document.getElementById('norm-target-sec').value;
             const title = document.getElementById('norm-title').value;
             const desc = document.getElementById('norm-desc').value;
             const file = document.getElementById('norm-file').files[0];
-
-            if(sIdx === "") return alert("Crea una categoría primero");
+            if(sIdx === "") return alert("Crea una categoría");
 
             const post = (img) => {
                 db[sIdx].norms.push({title, desc, img});
-                save();
-                sendLog("✅ Nueva Norma", `Publicada en **${db[sIdx].name}**\n**Título:** ${title}`, img);
-                document.getElementById('norm-title').value = "";
-                document.getElementById('norm-desc').value = "";
-                document.getElementById('norm-file').value = "";
+                saveDB();
+                sendLog("✅ Norma Añadida", `Categoría: ${db[sIdx].name}\nNorma: ${title}`);
             };
-
-            if(file) {
-                const r = new FileReader();
-                r.onload = () => post(r.result);
-                r.readAsDataURL(file);
-            } else post("");
+            if(file) { const r = new FileReader(); r.onload = () => post(r.result); r.readAsDataURL(file); } else post("");
         }
 
-        function deleteNorm(si, ni) {
-            if(confirm("¿Borrar norma?")) {
-                sendLog("🗑️ Norma Borrada", `Se eliminó **${db[si].norms[ni].title}**`);
-                db[si].norms.splice(ni, 1);
-                save();
-            }
-        }
+        function deleteNorm(si, ni) { if(confirm("¿Borrar?")) { db[si].norms.splice(ni, 1); saveDB(); } }
+        function saveDB() { localStorage.setItem('esp_db_v13', JSON.stringify(db)); render(); }
 
-        // WEBHOOKS Y SEGURIDAD
-        function askWebhookPass(btn) {
-            const p = prompt("Contraseña de Conexiones:");
-            if(p === "Pampigod") switchTab('tab-webhooks', btn);
-            else if(p !== null) alert("Incorrecta");
-        }
-
-        function saveWebhook() {
-            config.webhook = document.getElementById('set-webhook').value;
-            localStorage.setItem('esp_cfg_v11', JSON.stringify(config));
-            alert("Conexión guardada");
-            sendLog("🔗 Vinculación Exitosa", "Este canal ahora recibe los logs de España District.");
-        }
-
-        async function sendLog(t, d, img = null) {
-            if(!config.webhook) return;
-            const embed = { title: t, description: d, color: 3447003, timestamp: new Date() };
-            if(img && img.startsWith('data:image')) embed.image = { url: "attachment://norma.png" }; // Solo ilustrativo en log directo
+        function render() {
+            const cont = document.getElementById('public-content');
+            const lSec = document.getElementById('list-sections');
+            const lNormE = document.getElementById('list-norms-edit');
+            const sel = document.getElementById('norm-target-sec');
+            const q = document.getElementById('search').value.toLowerCase();
             
-            fetch(config.webhook, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({embeds: [embed]})
+            cont.innerHTML = ""; lSec.innerHTML = ""; lNormE.innerHTML = ""; sel.innerHTML = "";
+            
+            db.forEach((s, si) => {
+                sel.innerHTML += `<option value="${si}">${s.name}</option>`;
+                lSec.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;"><b>${s.name}</b><button onclick="deleteSection(${si})" style="border:none; color:red; cursor:pointer; background:none;">🗑️</button></div>`;
+                
+                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q));
+                if(filtered.length > 0) {
+                    cont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:var(--primary); font-size:12px;">${s.name.toUpperCase()}</div>`;
+                    filtered.forEach(n => {
+                        cont.innerHTML += `<div class="card"><b>${n.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:15px;">`:''}</div>`;
+                    });
+                }
+                s.norms.forEach((n, ni) => {
+                    lNormE.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; font-size:13px;">${s.name}: ${n.title} <button onclick="deleteNorm(${si},${ni})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
+                });
             });
-        }
-
-        // UI
-        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
-        function navigate(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); closeSidebar(); }
-        function openAdmin() { closeSidebar(); document.getElementById('login-screen').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
-        
-        function checkPass() {
-            if(document.getElementById('admin-pass').value === "pampiano17) { closeLogin(); navigate('admin'); }
-            else alert("Error");
         }
 
         function switchTab(t, b) {
@@ -278,46 +308,13 @@
             if(b) b.classList.add('active');
         }
 
-        function updateStyles() {
-            config.title = document.getElementById('set-title').value;
-            config.sub = document.getElementById('set-subtitle').value;
-            config.logo = document.getElementById('set-logo').value;
-            localStorage.setItem('esp_cfg_v11', JSON.stringify(config));
-            applyConfig();
-            alert("Diseño aplicado");
+        async function sendLog(t, d) {
+            if(!config.webhook) return;
+            fetch(config.webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({embeds:[{title:t, description:d, color:3447003}]})});
         }
 
-        function save() { localStorage.setItem('esp_v11', JSON.stringify(db)); render(); }
-
-        function render() {
-            const cont = document.getElementById('public-content');
-            const lSec = document.getElementById('list-sections');
-            const lNormEdit = document.getElementById('list-norms-edit');
-            const sel = document.getElementById('norm-target-sec');
-            const q = document.getElementById('search').value.toLowerCase();
-            
-            cont.innerHTML = ""; lSec.innerHTML = ""; lNormEdit.innerHTML = ""; sel.innerHTML = "";
-            
-            db.forEach((s, si) => {
-                sel.innerHTML += `<option value="${si}">${s.name}</option>`;
-                lSec.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;"><b>${s.name}</b> <button class="btn-danger" onclick="deleteSection(${si})">Eliminar</button></div>`;
-                
-                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q));
-                if(filtered.length > 0) {
-                    cont.innerHTML += `<div style="margin: 20px 0 10px; font-weight:800; color:var(--primary); font-size:12px; letter-spacing:1px;">${s.name.toUpperCase()}</div>`;
-                    filtered.forEach(n => {
-                        cont.innerHTML += `<div class="card"><b>${n.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:12px;">`:''}</div>`;
-                    });
-                }
-
-                s.norms.forEach((n, ni) => {
-                    lNormEdit.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; font-size:13px;"><div><b>${s.name}:</b> ${n.title}</div> <button onclick="deleteNorm(${si},${ni})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
-                });
-            });
-        }
-
-        applyConfig();
-        render();
+        init();
     </script>
 </body>
 </html>
+ 
