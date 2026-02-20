@@ -26,7 +26,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* SIDEBAR - NO ESTORBA */
+        /* SIDEBAR & OVERLAY */
         .sidebar-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.2);
             z-index: 1999; visibility: hidden; opacity: 0; transition: 0.3s;
@@ -63,16 +63,15 @@
         .btn { border: none; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background: var(--grad); color: white; padding: 14px 28px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 117, 252, 0.3); }
+        .btn-danger { background: #fee2e2; color: #ef4444; padding: 8px 12px; border-radius: 10px; font-size: 12px; }
 
         input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; background: #fff; font-family: inherit; box-sizing: border-box; }
-        input:focus { border-color: var(--primary); outline: none; }
 
-        /* ADMIN TABS */
-        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 500px; }
+        /* TABS */
+        .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 500px; padding: 5px; }
         .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        /* LOGIN */
         #login-screen { position: fixed; inset: 0; background: var(--grad); z-index: 3000; display: none; align-items: center; justify-content: center; }
     </style>
 </head>
@@ -81,7 +80,7 @@
     <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 
     <header class="header">
-        <div id="brand-name" style="font-weight: 800; font-size: 19px; letter-spacing: -0.5px;">ESPAÑA <span style="color:var(--primary)">DISTRICT</span></div>
+        <div style="font-weight: 800; font-size: 19px;">ESPAÑA <span style="color:var(--primary)">DISTRICT</span></div>
         <button onclick="openSidebar()" style="background:#f1f5f9; border:none; width:45px; height:45px; border-radius:12px; font-size:20px; cursor:pointer;">☰</button>
     </header>
 
@@ -97,68 +96,78 @@
 
     <section id="view-home" class="view active">
         <img id="main-logo" src="" width="150" style="margin-bottom:20px;">
-        <h1 id="home-title" style="font-size: 36px; margin:0;"></h1>
-        <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px;"></p>
-        <button class="btn btn-primary" onclick="navigate('public')">Ver Normas</button>
+        <h1 id="home-title" style="font-size: 36px; margin:0; text-align:center;"></h1>
+        <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px; margin: 15px 0 25px;"></p>
+        <button class="btn btn-primary" onclick="navigate('public')">Ver Normas →</button>
     </section>
 
     <section id="view-public" class="view">
-        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px;">
+        <input type="text" id="search" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px; margin-bottom:20px;">
         <div id="public-content" style="width:100%; max-width:500px;"></div>
     </section>
 
     <section id="view-admin" class="view">
         <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-data', this)">Normas</button>
+            <button class="tab-btn active" onclick="switchTab('tab-sections', this)">Categorías</button>
+            <button class="tab-btn" onclick="switchTab('tab-norms', this)">Normas</button>
             <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Diseño</button>
             <button class="tab-btn" onclick="askWebhookPass(this)">🔗 Webhooks</button>
         </div>
 
-        <div id="tab-data" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div id="tab-sections" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Nueva Norma</h3>
-                <input type="text" id="norm-title" placeholder="Título">
-                <textarea id="norm-desc" rows="3" placeholder="Contenido..."></textarea>
-                <input type="file" id="norm-file" accept="image/*">
-                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Publicar</button>
+                <h3>Crear Nueva Categoría</h3>
+                <input type="text" id="new-sec-name" placeholder="Ej: Normas Civiles">
+                <button class="btn btn-primary" style="width:100%" onclick="addSection()">+ Crear Categoría</button>
             </div>
-            <div id="list-items" style="width:100%; max-width:500px;"></div>
+            <div id="list-sections" style="width:100%; max-width:500px;"></div>
+        </div>
+
+        <div id="tab-norms" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+            <div class="card">
+                <h3>Añadir Norma</h3>
+                <select id="norm-target-sec"></select>
+                <input type="text" id="norm-title" placeholder="Título de la norma">
+                <textarea id="norm-desc" rows="3" placeholder="Descripción de la regla..."></textarea>
+                <input type="file" id="norm-file" accept="image/*">
+                <button class="btn btn-primary" style="width:100%" onclick="saveNorma()">Guardar Norma</button>
+            </div>
+            <div id="list-norms-edit" style="width:100%; max-width:500px;"></div>
         </div>
 
         <div id="tab-style" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Personalizar Inicio</h3>
+                <h3>Estética de Inicio</h3>
                 <input type="text" id="set-title" placeholder="Título">
                 <input type="text" id="set-logo" placeholder="URL del Logo">
                 <textarea id="set-subtitle" placeholder="Subtítulo..."></textarea>
-                <button class="btn btn-primary" style="width:100%" onclick="updateStyles()">Guardar Diseño</button>
+                <button class="btn btn-primary" style="width:100%" onclick="updateStyles()">Aplicar Diseño</button>
             </div>
         </div>
 
         <div id="tab-webhooks" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card" style="border: 2px solid #5865F2;">
-                <h3 style="color:#5865F2;">Configuración de Discord</h3>
-                <p style="font-size:12px; color:#64748b;">Pega aquí la URL del Webhook donde se enviarán los logs.</p>
-                <input type="text" id="set-webhook" placeholder="https://discord.com/api/webhooks/...">
-                <button class="btn btn-primary" style="width:100%; background:#5865F2;" onclick="saveWebhook()">Guardar Webhook</button>
+                <h3 style="color:#5865F2;">Discord Logs</h3>
+                <input type="text" id="set-webhook" placeholder="URL del Webhook">
+                <button class="btn btn-primary" style="width:100%; background:#5865F2;" onclick="saveWebhook()">Guardar Conexión</button>
             </div>
         </div>
     </section>
 
     <div id="login-screen">
         <div class="card" style="max-width:350px; text-align:center;">
-            <h2>Staff Login</h2>
+            <h2>Staff Access</h2>
             <input type="password" id="admin-pass" placeholder="Contraseña">
             <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Entrar</button>
-            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px;">Cancelar</p>
+            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px; font-weight:700;">CANCELAR</p>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('esp_v10')) || [{norms:[]}];
-        let config = JSON.parse(localStorage.getItem('esp_cfg_v10')) || {
+        let db = JSON.parse(localStorage.getItem('esp_v11')) || [];
+        let config = JSON.parse(localStorage.getItem('esp_cfg_v11')) || {
             title: "España District",
-            sub: "Tu centro oficial de normativas.",
+            sub: "Centro oficial de normativas.",
             logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png",
             webhook: ""
         };
@@ -173,33 +182,84 @@
             document.getElementById('set-webhook').value = config.webhook;
         }
 
-        // SEGURIDAD WEBHOOK
-        function askWebhookPass(btn) {
-            const p = prompt("Introduce la contraseña de Conexiones:");
-            if(p === "Pampigod") {
-                switchTab('tab-webhooks', btn);
-            } else if(p !== null) {
-                alert("Contraseña incorrecta");
+        // SECCIONES
+        function addSection() {
+            const name = document.getElementById('new-sec-name').value;
+            if(!name) return;
+            db.push({name: name, norms: []});
+            document.getElementById('new-sec-name').value = "";
+            save();
+            sendLog("📁 Nueva Categoría", `Se ha creado la sección: **${name}**`);
+        }
+
+        function deleteSection(i) {
+            if(confirm("¿Borrar sección y todas sus normas?")) {
+                sendLog("🗑️ Sección Eliminada", `Se borró: **${db[i].name}**`);
+                db.splice(i, 1);
+                save();
             }
+        }
+
+        // NORMAS
+        async function saveNorma() {
+            const sIdx = document.getElementById('norm-target-sec').value;
+            const title = document.getElementById('norm-title').value;
+            const desc = document.getElementById('norm-desc').value;
+            const file = document.getElementById('norm-file').files[0];
+
+            if(sIdx === "") return alert("Crea una categoría primero");
+
+            const post = (img) => {
+                db[sIdx].norms.push({title, desc, img});
+                save();
+                sendLog("✅ Nueva Norma", `Publicada en **${db[sIdx].name}**\n**Título:** ${title}`, img);
+                document.getElementById('norm-title').value = "";
+                document.getElementById('norm-desc').value = "";
+                document.getElementById('norm-file').value = "";
+            };
+
+            if(file) {
+                const r = new FileReader();
+                r.onload = () => post(r.result);
+                r.readAsDataURL(file);
+            } else post("");
+        }
+
+        function deleteNorm(si, ni) {
+            if(confirm("¿Borrar norma?")) {
+                sendLog("🗑️ Norma Borrada", `Se eliminó **${db[si].norms[ni].title}**`);
+                db[si].norms.splice(ni, 1);
+                save();
+            }
+        }
+
+        // WEBHOOKS Y SEGURIDAD
+        function askWebhookPass(btn) {
+            const p = prompt("Contraseña de Conexiones:");
+            if(p === "Pampigod") switchTab('tab-webhooks', btn);
+            else if(p !== null) alert("Incorrecta");
         }
 
         function saveWebhook() {
             config.webhook = document.getElementById('set-webhook').value;
-            localStorage.setItem('esp_cfg_v10', JSON.stringify(config));
-            alert("Webhook guardado correctamente");
-            sendLog("🔗 Webhook Vinculado", "Este canal ahora recibirá los logs de la web.");
+            localStorage.setItem('esp_cfg_v11', JSON.stringify(config));
+            alert("Conexión guardada");
+            sendLog("🔗 Vinculación Exitosa", "Este canal ahora recibe los logs de España District.");
         }
 
-        async function sendLog(t, d) {
+        async function sendLog(t, d, img = null) {
             if(!config.webhook) return;
+            const embed = { title: t, description: d, color: 3447003, timestamp: new Date() };
+            if(img && img.startsWith('data:image')) embed.image = { url: "attachment://norma.png" }; // Solo ilustrativo en log directo
+            
             fetch(config.webhook, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({embeds: [{title: t, description: d, color: 3447003, timestamp: new Date()}]})
+                body: JSON.stringify({embeds: [embed]})
             });
         }
 
-        // FUNCIONES GENERALES
+        // UI
         function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); }
         function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
         function navigate(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); closeSidebar(); }
@@ -207,7 +267,7 @@
         function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
         
         function checkPass() {
-            if(document.getElementById('admin-pass').value === "pampiano17") { closeLogin(); navigate('admin'); }
+            if(document.getElementById('admin-pass').value === "ESP123") { closeLogin(); navigate('admin'); }
             else alert("Error");
         }
 
@@ -222,49 +282,38 @@
             config.title = document.getElementById('set-title').value;
             config.sub = document.getElementById('set-subtitle').value;
             config.logo = document.getElementById('set-logo').value;
-            localStorage.setItem('esp_cfg_v10', JSON.stringify(config));
+            localStorage.setItem('esp_cfg_v11', JSON.stringify(config));
             applyConfig();
-            alert("Diseño actualizado");
+            alert("Diseño aplicado");
         }
 
-        async function saveNorma() {
-            const title = document.getElementById('norm-title').value;
-            const desc = document.getElementById('norm-desc').value;
-            const file = document.getElementById('norm-file').files[0];
-            const post = (img) => {
-                db[0].norms.push({title, desc, img});
-                localStorage.setItem('esp_v10', JSON.stringify(db));
-                render();
-                sendLog("✅ Nueva Norma", `Se ha publicado: **${title}**`);
-                document.getElementById('norm-title').value = "";
-                document.getElementById('norm-desc').value = "";
-            };
-            if(file) { const r = new FileReader(); r.onload = () => post(r.result); r.readAsDataURL(file); }
-            else post("");
-        }
+        function save() { localStorage.setItem('esp_v11', JSON.stringify(db)); render(); }
 
         function render() {
             const cont = document.getElementById('public-content');
-            const list = document.getElementById('list-items');
+            const lSec = document.getElementById('list-sections');
+            const lNormEdit = document.getElementById('list-norms-edit');
+            const sel = document.getElementById('norm-target-sec');
             const q = document.getElementById('search').value.toLowerCase();
-            cont.innerHTML = ""; list.innerHTML = "";
             
-            db[0].norms.forEach((n, i) => {
-                if(n.title.toLowerCase().includes(q)) {
-                    cont.innerHTML += `<div class="card"><b>${n.title}</b><p style="font-size:14px; color:#64748b;">${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:12px; margin-top:10px;">`:''}</div>`;
+            cont.innerHTML = ""; lSec.innerHTML = ""; lNormEdit.innerHTML = ""; sel.innerHTML = "";
+            
+            db.forEach((s, si) => {
+                sel.innerHTML += `<option value="${si}">${s.name}</option>`;
+                lSec.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;"><b>${s.name}</b> <button class="btn-danger" onclick="deleteSection(${si})">Eliminar</button></div>`;
+                
+                const filtered = s.norms.filter(n => n.title.toLowerCase().includes(q));
+                if(filtered.length > 0) {
+                    cont.innerHTML += `<div style="margin: 20px 0 10px; font-weight:800; color:var(--primary); font-size:12px; letter-spacing:1px;">${s.name.toUpperCase()}</div>`;
+                    filtered.forEach(n => {
+                        cont.innerHTML += `<div class="card"><b>${n.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${n.desc}</p>${n.img ? `<img src="${n.img}" style="width:100%; border-radius:12px;">`:''}</div>`;
+                    });
                 }
-                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; font-size:13px;">${n.title} <button onclick="deleteNorm(${i})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
-            });
-        }
 
-        function deleteNorm(i) {
-            if(confirm("¿Borrar?")) { 
-                const name = db[0].norms[i].title;
-                db[0].norms.splice(i, 1); 
-                localStorage.setItem('esp_v10', JSON.stringify(db)); 
-                render(); 
-                sendLog("🗑️ Norma Eliminada", `Se ha borrado: **${name}**`);
-            }
+                s.norms.forEach((n, ni) => {
+                    lNormEdit.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px; font-size:13px;"><div><b>${s.name}:</b> ${n.title}</div> <button onclick="deleteNorm(${si},${ni})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
+                });
+            });
         }
 
         applyConfig();
