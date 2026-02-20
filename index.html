@@ -3,74 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Premium System</title>
+    <title>España District | Sistema Centralizado</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2575fc;
-            --accent: #6a11cb;
-            --bg: #f8fafc;
-            --white: #ffffff;
-            --text: #0f172a;
-            --grad: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
-        }
-
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-        /* HEADER */
-        .header { 
-            position: fixed; top: 0; width: 100%; height: 70px; 
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; box-sizing: border-box; z-index: 1000; 
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* SIDEBAR & OVERLAY */
-        .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-            z-index: 1999; display: none; opacity: 0; transition: 0.3s;
-        }
+        :root { --primary: #2575fc; --accent: #6a11cb; --bg: #f8fafc; --white: #ffffff; --text: #0f172a; --grad: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); }
+        
+        .header { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1999; display: none; opacity: 0; transition: 0.3s; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-
-        .sidebar { 
-            position: fixed; right: -320px; top: 0; width: 300px; height: 100%; 
-            background: var(--white); z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 30px; box-shadow: -10px 0 40px rgba(0,0,0,0.1); 
-            display: flex; flex-direction: column; visibility: hidden;
-        }
+        .sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: var(--white); z-index: 2000; transition: 0.4s; padding: 30px; display: flex; flex-direction: column; visibility: hidden; }
         .sidebar.open { right: 0; visibility: visible; }
 
-        .nav-item { 
-            padding: 14px 18px; border-radius: 16px; margin-bottom: 8px; cursor: pointer; 
-            font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s;
-            color: #64748b; text-decoration: none;
-        }
-        .nav-item:hover { background: #f1f5f9; color: var(--primary); transform: translateX(-5px); }
-
-        /* VISTAS */
         .view { display: none; flex-direction: column; align-items: center; padding: 100px 20px 40px; min-height: 100vh; box-sizing: border-box; width: 100%; }
         .view.active { display: flex; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS */
-        .card { 
-            background: var(--white); padding: 25px; border-radius: 24px; width: 100%; max-width: 500px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.03);
-            box-sizing: border-box;
-        }
-
-        .btn { border: none; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--grad); color: white; padding: 14px 28px; font-size: 14px; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 117, 252, 0.3); }
-
-        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; background: #fff; font-family: inherit; box-sizing: border-box; }
+        .card { background: var(--white); padding: 25px; border-radius: 24px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.03); box-sizing: border-box; }
+        .btn { border: none; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; }
+        .btn-primary { background: var(--grad); color: white; width: 100%; }
+        
+        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; font-family: inherit; box-sizing: border-box; }
         
         .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; width: 100%; max-width: 600px; padding: 5px; scrollbar-width: none; }
-        .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .tab-btn { padding: 10px 18px; border-radius: 12px; border: none; background: #e2e8f0; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        #login-screen { position: fixed; inset: 0; background: var(--grad); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        #login-screen, #staff-init-screen, #master-gate-screen { position: fixed; inset: 0; background: var(--grad); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -82,336 +42,284 @@
         <button onclick="openSidebar()" style="background:#f1f5f9; border:none; width:45px; height:45px; border-radius:12px; font-size:20px; cursor:pointer;">☰</button>
     </header>
 
-    <div class="sidebar" id="sidebar">
+    <nav class="sidebar" id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <span style="font-weight: 800; color: var(--primary); font-size: 12px;">NAVEGACIÓN</span>
-            <button onclick="closeSidebar()" style="background:none; border:none; font-size: 28px; cursor:pointer; color:#cbd5e1;">&times;</button>
+            <span style="font-weight: 800; color: var(--primary); font-size: 12px;">MENÚ</span>
+            <button onclick="closeSidebar()" style="background:none; border:none; font-size: 28px; cursor:pointer;">&times;</button>
         </div>
-        <div class="nav-item" onclick="navigate('home')">🏠 Inicio</div>
-        <div class="nav-item" onclick="navigate('public')">📜 Normativas</div>
-        <div class="nav-item" onclick="navigate('gov')">🏛️ Gobierno</div>
-        <div class="nav-item" onclick="openAdmin()">⚙️ Panel Staff</div>
-        
-        <div id="dynamic-menu-items" style="border-top: 1px solid #f1f5f9; margin-top: 15px; padding-top: 15px;">
-            </div>
-    </div>
+        <div onclick="navigate('home')" style="cursor:pointer; margin-bottom:15px; font-weight:600;">🏠 Inicio</div>
+        <div onclick="navigate('norms')" style="cursor:pointer; margin-bottom:15px; font-weight:600;">📜 Normativas</div>
+        <div onclick="navigate('gov')" style="cursor:pointer; margin-bottom:15px; font-weight:600;">🏛️ Gobierno</div>
+        <div onclick="openAdmin()" style="cursor:pointer; margin-bottom:15px; font-weight:600; color:var(--primary)">⚙️ Panel Staff</div>
+        <div id="dynamic-links" style="border-top: 1px solid #eee; padding-top:15px;"></div>
+    </nav>
 
     <section id="view-home" class="view active">
-        <img id="main-logo" src="" width="160" style="margin-bottom:20px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));">
-        <h1 id="home-title" style="font-size: 38px; margin:0; text-align:center;"></h1>
-        <p id="home-subtitle" style="color:#64748b; text-align:center; max-width:400px; margin: 15px 0 30px;"></p>
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-primary" onclick="navigate('public')">Normas</button>
-            <button class="btn btn-primary" style="background:#334155;" onclick="navigate('gov')">Gobierno</button>
-        </div>
+        <img id="main-logo" src="" width="150" style="margin-bottom:20px;">
+        <h1 id="home-title"></h1>
+        <p id="home-subtitle" style="text-align:center; max-width:400px; color:#64748b;"></p>
+        <button class="btn btn-primary" onclick="navigate('norms')" style="width: auto; padding: 14px 40px;">Entrar a la Ciudad</button>
     </section>
 
-    <section id="view-public" class="view">
+    <section id="view-norms" class="view">
         <h2>📜 Normativas</h2>
-        <input type="text" id="search-norms" placeholder="🔍 Buscar norma..." onkeyup="render()" style="max-width:500px;">
+        <input type="text" id="search-norms" placeholder="Buscar norma..." onkeyup="render()" style="max-width:500px;">
         <div id="norms-content" style="width:100%; max-width:500px;"></div>
     </section>
 
     <section id="view-gov" class="view">
-        <h2>🏛️ Sistema de Gobierno</h2>
-        <input type="text" id="search-gov" placeholder="🔍 Buscar en gobierno..." onkeyup="render()" style="max-width:500px;">
+        <h2>🏛️ Gobierno</h2>
+        <input type="text" id="search-gov" placeholder="Buscar en gobierno..." onkeyup="render()" style="max-width:500px;">
         <div id="gov-content" style="width:100%; max-width:500px;"></div>
     </section>
 
     <section id="view-admin" class="view">
         <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-norms', this)">Normas</button>
-            <button class="tab-btn" onclick="switchTab('tab-gov-admin', this)">🏛️ Gobierno</button>
-            <button class="tab-btn" onclick="switchTab('tab-menu', this)">🔗 Menú/Links</button>
-            <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Diseño</button>
+            <button class="tab-btn active" onclick="switchTab('adm-norms', this)">Normas</button>
+            <button class="tab-btn" onclick="switchTab('adm-gov', this)">Gobierno</button>
+            <button class="tab-btn" onclick="switchTab('adm-menu', this)">Menú</button>
             <button class="tab-btn" onclick="askWebhookPass(this)">🔒 Conexiones</button>
         </div>
 
-        <div id="tab-norms" class="admin-tab-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div id="adm-norms" class="adm-content" style="width:100%; display:flex; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Categorías de Normas</h3>
-                <input type="text" id="new-norm-sec" placeholder="Nueva categoría">
-                <button class="btn btn-primary" onclick="addSection('norms')">+ Añadir</button>
-                <div id="edit-list-secs-norms" style="margin-top:15px;"></div>
+                <h3>Categoría de Normas</h3>
+                <input type="text" id="in-sec-norm" placeholder="Nombre (ej: Robos)">
+                <button class="btn btn-primary" onclick="addSec('norms')">Crear Categoría</button>
             </div>
             <div class="card">
-                <h3>Añadir Norma</h3>
-                <select id="sel-sec-norms"></select>
-                <input type="text" id="norm-title" placeholder="Título">
-                <textarea id="norm-desc" rows="3" placeholder="Descripción..."></textarea>
-                <input type="file" id="norm-file" accept="image/*">
-                <button class="btn btn-primary" style="width:100%" onclick="saveItem('norms')">Guardar</button>
+                <h3>Nueva Norma</h3>
+                <select id="sel-sec-norm"></select>
+                <input type="text" id="norm-t" placeholder="Título">
+                <textarea id="norm-d" placeholder="Descripción..."></textarea>
+                <input type="file" id="norm-f" accept="image/*">
+                <button class="btn btn-primary" onclick="saveItem('norms')">Publicar</button>
             </div>
         </div>
 
-        <div id="tab-gov-admin" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+        <div id="adm-gov" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Categorías Gobierno</h3>
-                <input type="text" id="new-gov-sec" placeholder="Nueva categoría (ej: Ministerios)">
-                <button class="btn btn-primary" onclick="addSection('gov')">+ Añadir</button>
-                <div id="edit-list-secs-gov" style="margin-top:15px;"></div>
+                <h3>Categoría de Gobierno</h3>
+                <input type="text" id="in-sec-gov" placeholder="Nombre (ej: Ministerios)">
+                <button class="btn btn-primary" onclick="addSec('gov')">Crear Categoría</button>
             </div>
             <div class="card">
-                <h3>Añadir Contenido Gobierno</h3>
+                <h3>Nuevo Contenido</h3>
                 <select id="sel-sec-gov"></select>
-                <input type="text" id="gov-title" placeholder="Título">
-                <textarea id="gov-desc" rows="3" placeholder="Descripción..."></textarea>
-                <input type="file" id="gov-file" accept="image/*">
-                <button class="btn btn-primary" style="width:100%" onclick="saveItem('gov')">Guardar</button>
+                <input type="text" id="gov-t" placeholder="Título">
+                <textarea id="gov-d" placeholder="Descripción..."></textarea>
+                <input type="file" id="gov-f" accept="image/*">
+                <button class="btn btn-primary" onclick="saveItem('gov')">Publicar</button>
             </div>
         </div>
 
-        <div id="tab-menu" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+        <div id="adm-menu" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Enlaces del Menú Lateral</h3>
-                <input type="text" id="menu-label" placeholder="Texto (ej: Discord Staff)">
-                <input type="text" id="menu-url" placeholder="URL (https://...)">
-                <button class="btn btn-primary" style="width:100%" onclick="addMenuLink()">Añadir al Menú</button>
-            </div>
-            <div id="list-menu-links" style="width:100%; max-width:500px;"></div>
-        </div>
-
-        <div id="tab-style" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
-            <div class="card">
-                <h3>Estética Principal</h3>
-                <input type="text" id="set-title">
-                <textarea id="set-subtitle"></textarea>
-                <input type="text" id="set-logo">
-                <button class="btn btn-primary" onclick="updateStyles()">Aplicar</button>
+                <h3>Links de Discord</h3>
+                <input type="text" id="link-n" placeholder="Nombre (Discord Staff)">
+                <input type="text" id="link-u" placeholder="https://...">
+                <button class="btn btn-primary" onclick="addLink()">Añadir Link</button>
             </div>
         </div>
 
-        <div id="tab-webhooks" class="admin-tab-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
+        <div id="adm-conn" class="adm-content" style="width:100%; display:none; flex-direction:column; align-items:center;">
             <div class="card">
-                <h3>Webhooks y Seguridad</h3>
-                <input type="text" id="set-webhook" placeholder="Webhook URL">
-                <button class="btn btn-primary" onclick="saveWebhook()">Guardar</button>
+                <h3>Configuración y Seguridad</h3>
+                <input type="text" id="cfg-webhook" placeholder="Discord Webhook URL">
+                <button class="btn btn-primary" onclick="saveCfg()">Guardar Webhook</button>
                 <hr>
-                <input type="text" id="set-pass-admin" placeholder="Nueva clave Admin">
-                <button class="btn btn-primary" onclick="updatePass('admin')">Cambiar Clave Admin</button>
-                <input type="text" id="set-pass-web" placeholder="Nueva clave Conexiones">
-                <button class="btn btn-primary" onclick="updatePass('web')">Cambiar Clave Conexiones</button>
+                <input type="text" id="cfg-pass-admin" placeholder="Nueva Clave Admin">
+                <button class="btn btn-primary" onclick="updatePass('admin')">Actualizar Clave</button>
+            </div>
+            <div class="card" style="border: 2px solid red;">
+                <h3 style="color:red;">Zona Crítica (Head Only)</h3>
+                <input type="password" id="head-pass-verify" placeholder="Contraseña Head">
+                <button class="btn" style="background:red; color:white; width:100%" onclick="renderEditList()">Ver Lista de Borrado</button>
+                <div id="master-delete-list" style="margin-top:10px;"></div>
             </div>
         </div>
     </section>
 
+    <div id="master-gate-screen">
+        <div class="card" style="text-align:center;">
+            <h2>Llave de Acceso Staff</h2>
+            <input type="password" id="master-gate-pass" placeholder="Contraseña Maestra">
+            <button class="btn btn-primary" onclick="checkMasterGate()">Verificar Acceso</button>
+            <p onclick="closeAllModals()" style="cursor:pointer; margin-top:15px; font-size:12px;">Cerrar</p>
+        </div>
+    </div>
+
+    <div id="staff-init-screen">
+        <div class="card" style="text-align:center;">
+            <h2>Identificación de Staff</h2>
+            <input type="text" id="staff-name" placeholder="Nombre IC / OOC">
+            <input type="text" id="staff-range" placeholder="Rango">
+            <button class="btn btn-primary" onclick="saveStaffData()">Guardar Datos</button>
+        </div>
+    </div>
+
     <div id="login-screen">
-        <div class="card" style="max-width:350px; text-align:center;">
-            <h2>Acceso Restringido</h2>
-            <input type="password" id="admin-pass-input" placeholder="Contraseña">
-            <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Entrar</button>
-            <p onclick="closeLogin()" style="cursor:pointer; margin-top:20px; font-size:12px;">Cerrar</p>
+        <div class="card" style="text-align:center;">
+            <h2>Sesión Staff</h2>
+            <input type="password" id="pass-val" placeholder="Contraseña del Panel">
+            <button class="btn btn-primary" onclick="doLogin()">Entrar</button>
+            <p onclick="closeAllModals()" style="cursor:pointer; margin-top:15px; font-size:12px;">Cerrar</p>
         </div>
     </div>
 
     <script>
-        // DATA STRUCTURE
-        let dataNorms = JSON.parse(localStorage.getItem('esp_norms_v14')) || [];
-        let dataGov = JSON.parse(localStorage.getItem('esp_gov_v14')) || [];
-        let menuLinks = JSON.parse(localStorage.getItem('esp_menu_v14')) || [];
-        let config = JSON.parse(localStorage.getItem('esp_cfg_v14')) || {
-            title: "España District",
-            sub: "Portal oficial de normativas y estado.",
-            logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png",
-            webhook: "",
-            passAdmin: "ESP123",
-            passWeb: "Pampigod"
-        };
+        let db = JSON.parse(localStorage.getItem('ed_db')) || { norms: [], gov: [], links: [] };
+        let cfg = JSON.parse(localStorage.getItem('ed_cfg')) || { title: "España District", sub: "Portal de normativas", logo: "https://i.postimg.cc/Jz743TdL/e77730807aec5f2a5360ef9b416e25f7.png", webhook: "", passA: "ESP123", passW: "Pampigod" };
+        let staff = JSON.parse(localStorage.getItem('ed_staff')) || null;
 
         function init() {
-            document.getElementById('home-title').innerText = config.title;
-            document.getElementById('home-subtitle').innerText = config.sub;
-            document.getElementById('main-logo').src = config.logo;
-            document.getElementById('set-title').value = config.title;
-            document.getElementById('set-subtitle').value = config.sub;
-            document.getElementById('set-logo').value = config.logo;
+            document.getElementById('home-title').innerText = cfg.title;
+            document.getElementById('home-subtitle').innerText = cfg.sub;
+            document.getElementById('main-logo').src = cfg.logo;
             render();
         }
 
-        // NAVIGATION
-        function openSidebar() { 
-            document.getElementById('sidebar').classList.add('open'); 
-            document.getElementById('overlay').style.display = 'block'; 
-            setTimeout(() => document.getElementById('overlay').classList.add('active'), 10);
-        }
-        function closeSidebar() { 
-            document.getElementById('sidebar').classList.remove('open'); 
-            document.getElementById('overlay').classList.remove('active');
-            setTimeout(() => document.getElementById('overlay').style.display = 'none', 300);
-        }
-        function navigate(v) {
-            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
+        // LOGIN FLOW
+        function openAdmin() {
             closeSidebar();
+            document.getElementById('master-gate-screen').style.display = 'flex';
         }
 
-        // ADMIN CORE
-        function openAdmin() { closeSidebar(); document.getElementById('login-screen').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('login-screen').style.display = 'none'; }
-        function checkPass() {
-            if(document.getElementById('admin-pass-input').value === config.passAdmin) {
-                closeLogin(); navigate('admin');
-                document.getElementById('admin-pass-input').value = "";
-            } else alert("Clave Incorrecta");
-        }
-        function askWebhookPass(btn) {
-            const p = prompt("Clave de Conexiones:");
-            if(p === config.passWeb) switchTab('tab-webhooks', btn);
-            else if(p) alert("Incorrecta");
+        function checkMasterGate() {
+            if(document.getElementById('master-gate-pass').value === "pampiano17") {
+                document.getElementById('master-gate-screen').style.display = 'none';
+                document.getElementById('master-gate-pass').value = "";
+                if(!staff) {
+                    document.getElementById('staff-init-screen').style.display = 'flex';
+                } else {
+                    document.getElementById('login-screen').style.display = 'flex';
+                }
+            } else alert("Llave Incorrecta");
         }
 
-        // CATEGORIES & ITEMS
-        function addSection(type) {
-            const input = document.getElementById(type === 'norms' ? 'new-norm-sec' : 'new-gov-sec');
-            const val = input.value; if(!val) return;
-            if(type === 'norms') dataNorms.push({name: val, items: []});
-            else dataGov.push({name: val, items: []});
-            input.value = ""; saveAll();
+        function saveStaffData() {
+            const n = document.getElementById('staff-name').value;
+            const r = document.getElementById('staff-range').value;
+            if(!n || !r) return alert("Completa tus datos");
+            staff = { name: n, range: r };
+            localStorage.setItem('ed_staff', JSON.stringify(staff));
+            document.getElementById('staff-init-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        function doLogin() {
+            if(document.getElementById('pass-val').value === cfg.passA) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('pass-val').value = "";
+                navigate('admin');
+                sendEmbed("🔴 Acceso Staff", `**${staff.name}** (${staff.range}) ha iniciado sesión en el panel.`, 16711680);
+            } else alert("Clave de Sesión Incorrecta");
+        }
+
+        function closeAllModals() {
+            document.getElementById('master-gate-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('staff-init-screen').style.display = 'none';
+        }
+
+        // DATABASE ACTIONS
+        function addSec(type) {
+            const val = document.getElementById(type === 'norms' ? 'in-sec-norm' : 'in-sec-gov').value;
+            if(!val) return;
+            db[type].push({ name: val, items: [] });
+            save();
+            sendEmbed("📂 Nueva Categoría", `**${staff.name}** ha creado la categoría: **${val}** en ${type}.`);
         }
 
         async function saveItem(type) {
-            const sIdx = document.getElementById(type === 'norms' ? 'sel-sec-norms' : 'sel-sec-gov').value;
-            const title = document.getElementById(type === 'norms' ? 'norm-title' : 'gov-title').value;
-            const desc = document.getElementById(type === 'norms' ? 'norm-desc' : 'gov-desc').value;
-            const file = document.getElementById(type === 'norms' ? 'norm-file' : 'gov-file').files[0];
-            if(sIdx === "") return alert("Crea una categoría");
+            const sIdx = document.getElementById(type === 'norms' ? 'sel-sec-norm' : 'sel-sec-gov').value;
+            const t = document.getElementById(type === 'norms' ? 'norm-t' : 'gov-t').value;
+            const d = document.getElementById(type === 'norms' ? 'norm-d' : 'gov-d').value;
+            const f = document.getElementById(type === 'norms' ? 'norm-f' : 'gov-f').files[0];
+            if(sIdx === "") return alert("Elige una categoría");
 
-            const post = (img) => {
-                const target = type === 'norms' ? dataNorms : dataGov;
-                target[sIdx].items.push({title, desc, img});
-                saveAll();
-                sendLog(`🆕 ${type.toUpperCase()}`, `Publicado en ${target[sIdx].name}: ${title}`);
-                alert("Guardado!");
+            const push = (img) => {
+                db[type][sIdx].items.push({ title: t, desc: d, img: img });
+                save();
+                sendEmbed("📝 Nuevo Contenido", `**Usuario:** ${staff.name}\n**Rango:** ${staff.range}\n**Sección:** ${db[type][sIdx].name}\n**Título:** ${t}`, 3447003);
+                alert("¡Publicado!");
             };
-            if(file) { const r = new FileReader(); r.onload = () => post(r.result); r.readAsDataURL(file); } else post("");
+            if(f) { const reader = new FileReader(); reader.onload = () => push(reader.result); reader.readAsDataURL(f); } else push("");
         }
 
-        // MENU LINKS
-        function addMenuLink() {
-            const label = document.getElementById('menu-label').value;
-            const url = document.getElementById('menu-url').value;
-            if(!label || !url) return;
-            menuLinks.push({label, url});
-            document.getElementById('menu-label').value = "";
-            document.getElementById('menu-url').value = "";
-            saveAll();
-        }
-
-        function deleteMenuLink(i) { menuLinks.splice(i, 1); saveAll(); }
-
-        // RENDER SYSTEM
+        // RENDER CORE
         function render() {
-            const nCont = document.getElementById('norms-content');
-            const gCont = document.getElementById('gov-content');
-            const mCont = document.getElementById('dynamic-menu-items');
-            const mList = document.getElementById('list-menu-links');
+            const nBox = document.getElementById('norms-content');
+            const gBox = document.getElementById('gov-content');
+            const dLinks = document.getElementById('dynamic-links');
+            const sn = document.getElementById('sel-sec-norm');
+            const sg = document.getElementById('sel-sec-gov');
             
-            // Search values
-            const qN = document.getElementById('search-norms').value.toLowerCase();
-            const qG = document.getElementById('search-gov').value.toLowerCase();
+            nBox.innerHTML = ""; gBox.innerHTML = ""; dLinks.innerHTML = ""; sn.innerHTML = ""; sg.innerHTML = "";
 
-            nCont.innerHTML = ""; gCont.innerHTML = ""; mCont.innerHTML = ""; mList.innerHTML = "";
-            
-            // Render Norms
-            dataNorms.forEach((s, si) => {
-                const filtered = s.items.filter(i => i.title.toLowerCase().includes(qN));
-                if(filtered.length > 0) {
-                    nCont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:var(--primary); font-size:12px;">${s.name.toUpperCase()}</div>`;
-                    filtered.forEach(i => nCont.innerHTML += createCard(i));
-                }
+            db.norms.forEach((s, i) => {
+                sn.innerHTML += `<option value="${i}">${s.name}</option>`;
+                nBox.innerHTML += `<h3 style="color:var(--primary); margin:20px 0 10px;">${s.name}</h3>`;
+                s.items.forEach(it => nBox.innerHTML += `<div class="card"><b>${it.title}</b><p style="font-size:14px; color:#64748b;">${it.desc}</p>${it.img?`<img src="${it.img}" style="width:100%; border-radius:15px; margin-top:10px;">`:''}</div>`);
             });
 
-            // Render Gov
-            dataGov.forEach((s, si) => {
-                const filtered = s.items.filter(i => i.title.toLowerCase().includes(qG));
-                if(filtered.length > 0) {
-                    gCont.innerHTML += `<div style="margin:20px 0 10px; font-weight:800; color:#334155; font-size:12px;">${s.name.toUpperCase()}</div>`;
-                    filtered.forEach(i => gCont.innerHTML += createCard(i));
-                }
+            db.gov.forEach((s, i) => {
+                sg.innerHTML += `<option value="${i}">${s.name}</option>`;
+                gBox.innerHTML += `<h3 style="color:#334155; margin:20px 0 10px;">${s.name}</h3>`;
+                s.items.forEach(it => gBox.innerHTML += `<div class="card"><b>${it.title}</b><p style="font-size:14px; color:#64748b;">${it.desc}</p>${it.img?`<img src="${it.img}" style="width:100%; border-radius:15px; margin-top:10px;">`:''}</div>`);
             });
 
-            // Render Menu
-            menuLinks.forEach((link, i) => {
-                mCont.innerHTML += `<a href="${link.url}" target="_blank" class="nav-item">🔗 ${link.label}</a>`;
-                mList.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; padding:15px;">${link.label} <button onclick="deleteMenuLink(${i})" style="color:red; background:none; border:none;">🗑️</button></div>`;
-            });
-
-            // Update Selects in Admin
-            updateSelects();
+            db.links.forEach(l => dLinks.innerHTML += `<a href="${l.url}" target="_blank" style="display:block; margin-bottom:10px; text-decoration:none; color:#64748b; font-weight:600;">🔗 ${l.label}</a>`);
         }
 
-        function createCard(item) {
-            return `<div class="card"><b>${item.title}</b><p style="font-size:14px; color:#64748b; margin:10px 0;">${item.desc}</p>${item.img ? `<img src="${item.img}" style="width:100%; border-radius:15px;">`:''}</div>`;
-        }
-
-        function updateSelects() {
-            const sN = document.getElementById('sel-sec-norms');
-            const sG = document.getElementById('sel-sec-gov');
-            const eN = document.getElementById('edit-list-secs-norms');
-            const eG = document.getElementById('edit-list-secs-gov');
-            
-            sN.innerHTML = ""; sG.innerHTML = ""; eN.innerHTML = ""; eG.innerHTML = "";
-            
-            dataNorms.forEach((s, i) => {
-                sN.innerHTML += `<option value="${i}">${s.name}</option>`;
-                eN.innerHTML += `<div style="font-size:12px; margin-bottom:5px;">${s.name} <span style="color:red; cursor:pointer;" onclick="deleteSec('norms', ${i})">[Borrar]</span></div>`;
-            });
-            dataGov.forEach((s, i) => {
-                sG.innerHTML += `<option value="${i}">${s.name}</option>`;
-                eG.innerHTML += `<div style="font-size:12px; margin-bottom:5px;">${s.name} <span style="color:red; cursor:pointer;" onclick="deleteSec('gov', ${i})">[Borrar]</span></div>`;
+        // MASTER DELETE
+        function renderEditList() {
+            const pass = document.getElementById('head-pass-verify').value;
+            if(pass !== "Head") return alert("Clave Head Incorrecta");
+            const box = document.getElementById('master-delete-list');
+            box.innerHTML = "";
+            ['norms', 'gov'].forEach(type => {
+                db[type].forEach((s, i) => {
+                    box.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; font-size:12px;">${type}: ${s.name} <button onclick="masterDel('${type}', ${i})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">ELIMINAR</button></div>`;
+                });
             });
         }
 
-        function deleteSec(type, i) {
-            if(confirm("¿Borrar categoría y todo su contenido?")) {
-                if(type === 'norms') dataNorms.splice(i, 1); else dataGov.splice(i, 1);
-                saveAll();
+        function masterDel(type, i) {
+            if(confirm("¿Seguro? Se perderá todo el contenido de esa categoría.")) {
+                sendEmbed("⚠️ Borrado Crítico", `**${staff.name}** ha eliminado la categoría: **${db[type][i].name}**`);
+                db[type].splice(i, 1);
+                save();
+                renderEditList();
             }
         }
 
-        function saveAll() {
-            localStorage.setItem('esp_norms_v14', JSON.stringify(dataNorms));
-            localStorage.setItem('esp_gov_v14', JSON.stringify(dataGov));
-            localStorage.setItem('esp_menu_v14', JSON.stringify(menuLinks));
-            render();
-        }
+        // UI HELPERS
+        function save() { localStorage.setItem('ed_db', JSON.stringify(db)); render(); }
+        function saveCfg() { cfg.webhook = document.getElementById('cfg-webhook').value; localStorage.setItem('ed_cfg', JSON.stringify(cfg)); alert("Configuración Guardada"); }
+        function navigate(v) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); closeSidebar(); }
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
+        function switchTab(t, b) { document.querySelectorAll('.adm-content').forEach(x => x.style.display='none'); document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); document.getElementById(t).style.display='flex'; b.classList.add('active'); }
+        function askWebhookPass(b) { const p = prompt("Clave de Conexiones:"); if(p === cfg.passW) switchTab('adm-conn', b); }
+        function addLink() { const n = document.getElementById('link-n').value; const u = document.getElementById('link-u').value; if(!n || !u) return; db.links.push({ label: n, url: u }); save(); }
 
-        function switchTab(t, b) {
-            document.querySelectorAll('.admin-tab-content').forEach(x => x.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
-            document.getElementById(t).style.display = 'flex';
-            if(b) b.classList.add('active');
-        }
-
-        // OTHER HELPERS
-        function updatePass(type) {
-            const val = type === 'admin' ? document.getElementById('set-pass-admin').value : document.getElementById('set-pass-web').value;
-            if(!val) return;
-            if(type === 'admin') config.passAdmin = val; else config.passWeb = val;
-            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
-            alert("Contraseña actualizada");
-        }
-
-        function updateStyles() {
-            config.title = document.getElementById('set-title').value;
-            config.sub = document.getElementById('set-subtitle').value;
-            config.logo = document.getElementById('set-logo').value;
-            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
-            init();
-        }
-
-        function saveWebhook() {
-            config.webhook = document.getElementById('set-webhook').value;
-            localStorage.setItem('esp_cfg_v14', JSON.stringify(config));
-            alert("Webhook guardado");
-        }
-
-        async function sendLog(t, d) {
-            if(!config.webhook) return;
-            fetch(config.webhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({embeds:[{title:t, description:d, color:3447003}]})});
+        async function sendEmbed(title, desc, color = 3066993) {
+            if(!cfg.webhook) return;
+            const payload = {
+                embeds: [{
+                    title: title,
+                    description: desc,
+                    color: color,
+                    footer: { text: "Auditoría España District • " + new Date().toLocaleString() },
+                    timestamp: new Date()
+                }]
+            };
+            fetch(cfg.webhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         }
 
         init();
     </script>
 </body>
 </html>
+ 
