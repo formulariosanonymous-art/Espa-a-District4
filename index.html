@@ -3,122 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Portal Élite</title>
+    <title>España District | Portal Oficial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #00d2ff; --bg: #0f172a; --card-bg: rgba(255, 255, 255, 0.1);
-            --norms: #a855f7; --gov: #facc15; --danger: #ff4757; --glass: rgba(15, 23, 42, 0.7);
+            --primary: #00d2ff; --bg: #0f172a; --card-bg: rgba(30, 41, 59, 0.7);
+            --norms: #a855f7; --gov: #facc15; --danger: #ff4757;
         }
 
         body { 
             margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
             background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: #f8fafc; min-height: 100vh;
+            color: #f8fafc; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* HEADER & NAV */
         .header { 
-            position: fixed; top: 0; width: 100%; height: 80px; 
-            background: var(--glass); backdrop-filter: blur(20px); 
+            position: fixed; top: 0; width: 100%; height: 75px; 
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 40px; box-sizing: border-box; z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0 30px; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .view { display: none; flex-direction: column; align-items: center; padding: 120px 20px; box-sizing: border-box; }
-        .view.active { display: flex; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .view { display: none; flex-direction: column; align-items: center; padding: 110px 20px; box-sizing: border-box; width: 100%; }
+        .view.active { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ACORDEÓN MEJORADO */
-        .accordion { 
-            width: 100%; max-width: 850px; margin-bottom: 20px; 
-            border-radius: 20px; background: var(--card-bg); 
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .acc-header { 
-            padding: 25px; cursor: pointer; display: flex; justify-content: space-between; 
-            font-weight: 800; font-size: 20px; letter-spacing: 1px;
-        }
-        .acc-content { max-height: 0; overflow: hidden; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(0,0,0,0.2); }
-        .accordion.open .acc-content { max-height: 10000px; padding: 20px 0; }
+        /* BUSCADOR ESTILO ANTERIOR */
+        .search-container { width: 100%; max-width: 600px; margin-bottom: 40px; position: relative; }
+        .search-bar { width: 100%; padding: 18px 25px; border-radius: 15px; border: 2px solid var(--primary); background: rgba(255,255,255,0.05); color: white; font-size: 16px; outline: none; box-shadow: 0 0 20px rgba(0,210,255,0.2); }
 
-        /* ÍTEMS DENTRO DE LA NORMA */
-        .norm-item { 
-            margin: 15px 25px; padding: 25px; border-radius: 15px; 
-            background: rgba(255,255,255,0.03); border-left: 4px solid var(--primary);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .norm-item:nth-child(even) { border-left-color: var(--norms); background: rgba(255,255,255,0.06); }
-        .norm-item h3 { margin: 0 0 10px 0; color: #fff; font-size: 20px; }
-        .norm-item p { margin: 0; color: #cbd5e1; line-height: 1.6; font-size: 15px; }
-        .norm-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        /* ACORDEONES ESPACIADOS Y COLORIDOS */
+        .accordion { width: 100%; max-width: 900px; margin-bottom: 25px; border-radius: 20px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+        .acc-header { padding: 25px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 800; font-size: 20px; background: rgba(255,255,255,0.02); }
+        .acc-content { max-height: 0; overflow: hidden; transition: 0.5s ease; background: rgba(0,0,0,0.2); }
+        .accordion.open .acc-content { max-height: 15000px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* TARJETAS DE NORMAS */
+        .norm-card { margin: 20px 30px; padding: 25px; border-radius: 15px; background: rgba(255,255,255,0.03); border-left: 5px solid var(--primary); }
+        .norm-card h3 { margin: 0 0 10px 0; color: #fff; }
+        .norm-card p { color: #cbd5e1; line-height: 1.6; white-space: pre-line; }
+        .norm-img { width: 100%; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); }
 
         /* BOTONES */
-        .btn { border: none; border-radius: 14px; font-weight: 800; cursor: pointer; padding: 14px 28px; color: white; transition: 0.3s; text-transform: uppercase; font-size: 12px; }
-        .btn-primary { background: linear-gradient(135deg, #00d2ff, #3a7bd5); box-shadow: 0 5px 15px rgba(0,210,255,0.3); }
-        .btn-norms { background: linear-gradient(135deg, #a855f7, #6b21a8); box-shadow: 0 5px 15px rgba(168,85,247,0.3); }
-        .btn-gov { background: linear-gradient(135deg, #facc15, #ca8a04); color: #422006; box-shadow: 0 5px 15px rgba(250,204,21,0.3); }
+        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 12px 24px; color: white; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #00d2ff, #3a7bd5); }
+        .btn-danger { background: var(--danger); }
 
-        /* ADMIN PANEL */
-        .admin-box { background: rgba(15, 23, 42, 0.8); padding: 30px; border-radius: 24px; border: 1px solid var(--primary); width: 100%; max-width: 800px; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: inherit; }
+        /* LOGIN & ADMIN */
+        .admin-box { background: rgba(15, 23, 42, 0.9); padding: 30px; border-radius: 20px; border: 1px solid var(--primary); width: 100%; max-width: 800px; margin-bottom: 20px; }
+        input, textarea, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; }
         
-        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
 <body oncontextmenu="return false">
 
     <header class="header">
-        <div style="font-weight: 900; font-size: 22px; background: linear-gradient(to right, #00d2ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ESPAÑA DISTRICT</div>
-        <div style="display:flex; gap:12px;">
-            <button class="btn btn-primary" onclick="showView('home')">Inicio</button>
-            <button class="btn" style="background:rgba(255,255,255,0.1);" onclick="openGate()">Staff</button>
+        <div style="font-weight: 900; font-size: 22px; color: var(--primary);">ESPAÑA DISTRICT</div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn" style="background:rgba(255,255,255,0.1);" onclick="showView('home')">Inicio</button>
+            <button class="btn btn-primary" onclick="openGate()">Acceso Staff</button>
         </div>
     </header>
 
     <section id="view-home" class="view active">
-        <h1 style="font-size: 50px; margin-bottom: 10px; text-shadow: 0 10px 20px rgba(0,0,0,0.5);">Portal Élite</h1>
-        <p style="color: #94a3b8; font-size: 18px; margin-bottom: 40px;">Gestión de información y normativas</p>
-        <div style="display:flex; gap:25px;">
-            <button class="btn btn-norms" style="width:200px; height:70px; font-size:16px;" onclick="showView('norms')">Normativa</button>
-            <button class="btn btn-gov" style="width:200px; height:70px; font-size:16px;" onclick="showView('gov')">Gobierno</button>
+        <h1 style="font-size: 50px; text-shadow: 0 10px 20px rgba(0,0,0,0.4);">Portal de Información</h1>
+        
+        <div class="search-container">
+            <input type="text" class="search-bar" id="global-search" placeholder="Busca normativas o departamentos..." onkeyup="search()">
+        </div>
+
+        <div style="display:flex; gap:20px;">
+            <button class="btn" style="background:var(--norms); padding:20px 40px; font-size:18px;" onclick="showView('norms')">NORMAS</button>
+            <button class="btn" style="background:var(--gov); padding:20px 40px; font-size:18px; color:#000;" onclick="showView('gov')">GOBIERNO</button>
         </div>
     </section>
 
-    <section id="view-norms" class="view">
-        <h2 style="color:var(--norms); font-size:35px; margin-bottom:30px;">📜 Leyes y Normas</h2>
-        <div id="render-norms" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
-    </section>
-
-    <section id="view-gov" class="view">
-        <h2 style="color:var(--gov); font-size:35px; margin-bottom:30px;">🏛️ Organismos</h2>
-        <div id="render-gov" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
-    </section>
+    <section id="view-norms" class="view"><h2 style="color:var(--norms)">📜 Normativas</h2><div id="render-norms" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div></section>
+    <section id="view-gov" class="view"><h2 style="color:var(--gov)">🏛️ Gobierno</h2><div id="render-gov" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div></section>
 
     <section id="view-admin" class="view">
-        <div style="display:flex; gap:15px; margin-bottom:30px;">
-            <button class="btn btn-primary" onclick="tab('t-add')">Crear Nuevo</button>
-            <button class="btn" style="background:#475569;" onclick="tab('t-edit')">Administrar</button>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <button class="btn btn-primary" onclick="tab('t-add')">Añadir</button>
+            <button class="btn" style="background:#444;" onclick="tab('t-edit')">Gestionar</button>
             <button class="btn btn-danger" onclick="location.reload()">Cerrar</button>
         </div>
 
         <div id="t-add" class="tab-content" style="width:100%; max-width:800px;">
             <div class="admin-box">
-                <h3 style="color:var(--primary)">+ Nueva Categoría</h3>
+                <h3>+ Crear Categoría</h3>
                 <select id="c-type"><option value="norms">Normativa</option><option value="gov">Gobierno</option></select>
-                <input type="text" id="c-name" placeholder="Ej: Código Penal">
-                <button class="btn btn-primary" onclick="addC()">Añadir Categoría</button>
+                <input type="text" id="c-name" placeholder="Ej: Normas Civiles">
+                <button class="btn btn-primary" onclick="addC()">Crear</button>
             </div>
             <div class="admin-box">
-                <h3 style="color:var(--primary)">+ Publicar Ítem</h3>
+                <h3>+ Publicar Ítem (Imagen Galería)</h3>
                 <select id="c-dest"></select>
-                <input type="text" id="i-title" placeholder="Título (Ej: RDO-01)">
-                <textarea id="i-desc" rows="4" placeholder="Escribe el contenido aquí..."></textarea>
-                <label style="display:block; margin-top:10px; font-size:12px; color:var(--primary);">Seleccionar Imagen de Galería:</label>
+                <input type="text" id="i-title" placeholder="Título">
+                <textarea id="i-desc" rows="4" placeholder="Descripción..."></textarea>
                 <input type="file" id="i-file" accept="image/*">
-                <button class="btn btn-primary" onclick="addI()" style="margin-top:15px; width:100%;">Publicar ahora</button>
+                <button class="btn btn-primary" onclick="addI()" style="width:100%; margin-top:10px;">Publicar</button>
+            </div>
+            <div class="admin-box">
+                <h3>Webhook Discord</h3>
+                <input type="text" id="w-url" placeholder="URL Webhook">
+                <button class="btn btn-primary" onclick="saveW()">Guardar Webhook</button>
             </div>
         </div>
 
@@ -128,120 +118,107 @@
     </section>
 
     <div id="gate" class="overlay">
-        <div style="background:#1e1b4b; padding:40px; border-radius:30px; text-align:center; border:2px solid var(--primary); box-shadow: 0 0 50px rgba(0,210,255,0.2);">
-            <h3 style="margin-top:0">Acceso Restringido</h3>
-            <input type="password" id="p-gate" style="text-align:center; font-size:20px; letter-spacing:5px;">
-            <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="checkG()">Entrar al Panel</button>
+        <div style="background:#1e1b4b; padding:40px; border-radius:25px; border:2px solid var(--primary); text-align:center;">
+            <h3>Llave Maestra</h3>
+            <input type="password" id="p-gate" style="text-align:center;">
+            <button class="btn btn-primary" onclick="checkG()">Siguiente</button>
+        </div>
+    </div>
+
+    <div id="login" class="overlay">
+        <div style="background:#1e1b4b; padding:40px; border-radius:25px; border:2px solid var(--primary); text-align:center;">
+            <h3>Staff Login</h3>
+            <input type="text" id="s-user" placeholder="Nombre">
+            <input type="password" id="s-pass" placeholder="Contraseña">
+            <button class="btn btn-primary" onclick="finalLogin()">Acceder</button>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('ed_v3_color')) || { norms: [], gov: [] };
+        let db = JSON.parse(localStorage.getItem('ed_final_v5')) || { norms: [], gov: [], webhook: "" };
+        let currentUser = "";
 
-        function save() { localStorage.setItem('ed_v3_color', JSON.stringify(db)); render(); renderAdmin(); }
+        function save() { localStorage.setItem('ed_final_v5', JSON.stringify(db)); render(); renderAdmin(); }
+
         function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); }
-        function openGate() { document.getElementById('gate').style.display='flex'; }
-        function checkG() { if(document.getElementById('p-gate').value === 'pampiano17') { document.getElementById('gate').style.display='none'; showView('admin'); renderAdmin(); } }
         function tab(id) { document.querySelectorAll('.tab-content').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; }
+        function openGate() { document.getElementById('gate').style.display='flex'; }
 
-        function addC() {
-            const t = document.getElementById('c-type').value;
-            const n = document.getElementById('c-name').value;
-            if(n) { db[t].push({ name: n, items: [] }); save(); document.getElementById('c-name').value=""; }
+        async function log(t, d) {
+            if(!db.webhook) return;
+            await fetch(db.webhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title: t, description: d, color: 0x00d2ff, timestamp: new Date() }] }) });
         }
 
-        function addI() {
-            const path = document.getElementById('c-dest').value.split('-');
-            const t = document.getElementById('i-title').value;
-            const d = document.getElementById('i-desc').value;
-            const f = document.getElementById('i-file').files[0];
-
-            if(!t || !d) return alert("Faltan campos");
-
-            if(f) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    db[path[0]][path[1]].items.push({ title: t, desc: d, img: e.target.result });
-                    save();
-                    finishAdd();
-                };
-                reader.readAsDataURL(f);
-            } else {
-                db[path[0]][path[1]].items.push({ title: t, desc: d, img: null });
-                save();
-                finishAdd();
+        function checkG() { if(document.getElementById('p-gate').value === 'pampiano17') { document.getElementById('gate').style.display='none'; document.getElementById('login').style.display='flex'; } }
+        function finalLogin() {
+            if(document.getElementById('s-pass').value === 'ESP123') {
+                currentUser = document.getElementById('s-user').value;
+                document.getElementById('login').style.display='none';
+                showView('admin'); log("📥 Entrada Panel", `Staff: **${currentUser}**`);
             }
         }
 
-        function finishAdd() {
-            document.getElementById('i-title').value=""; 
-            document.getElementById('i-desc').value="";
-            document.getElementById('i-file').value="";
-            alert("Ítem publicado con éxito");
+        function addC() {
+            const t = document.getElementById('c-type').value, n = document.getElementById('c-name').value;
+            if(n) { db[t].push({ name: n, items: [] }); save(); log("📁 Nueva Categoría", `Staff: **${currentUser}** creó **${n}**`); }
         }
 
-        function delC(t, i) { if(confirm("¿Eliminar categoría?")) { db[t].splice(i, 1); save(); } }
-        function delI(t, ci, ii) { if(confirm("¿Eliminar este punto?")) { db[t][ci].items.splice(ii, 1); save(); } }
+        function addI() {
+            const p = document.getElementById('c-dest').value.split('-'), t = document.getElementById('i-title').value, d = document.getElementById('i-desc').value, f = document.getElementById('i-file').files[0];
+            if(!t || !d) return;
+            const process = (img) => {
+                db[p[0]][p[1]].items.push({ title: t, desc: d, img });
+                save(); log("📝 Publicación", `Staff: **${currentUser}** publicó **${t}** en **${db[p[0]][p[1]].name}**`);
+                document.getElementById('i-title').value = ""; document.getElementById('i-desc').value = ""; document.getElementById('i-file').value = ""; alert("Publicado");
+            };
+            if(f) { const reader = new FileReader(); reader.onload = (e) => process(e.target.result); reader.readAsDataURL(f); } else { process(null); }
+        }
 
         function editI(t, ci, ii) {
-            const nT = prompt("Nuevo Título:", db[t][ci].items[ii].title);
-            const nD = prompt("Nueva Descripción:", db[t][ci].items[ii].desc);
-            if(nT && nD) { db[t][ci].items[ii].title = nT; db[t][ci].items[ii].desc = nD; save(); }
+            const nt = prompt("Nuevo Título:", db[t][ci].items[ii].title), nd = prompt("Descripción:", db[t][ci].items[ii].desc);
+            if(nt && nd) { db[t][ci].items[ii].title = nt; db[t][ci].items[ii].desc = nd; save(); log("✎ Edición", `Staff: **${currentUser}** editó **${nt}**`); }
         }
 
-        function render() {
-            const rn = document.getElementById('render-norms');
-            const rg = document.getElementById('render-gov');
-            const sd = document.getElementById('c-dest');
-            rn.innerHTML = ""; rg.innerHTML = ""; sd.innerHTML = "";
+        function delI(t, ci, ii) { if(confirm("¿Borrar?")) { db[t][ci].items.splice(ii, 1); save(); } }
+        function saveW() { db.webhook = document.getElementById('w-url').value; save(); alert("Webhook guardado"); }
 
+        function render() {
+            const rn = document.getElementById('render-norms'), rg = document.getElementById('render-gov'), sd = document.getElementById('c-dest');
+            rn.innerHTML = ""; rg.innerHTML = ""; sd.innerHTML = "";
             ['norms', 'gov'].forEach(type => {
                 db[type].forEach((cat, ci) => {
-                    sd.innerHTML += `<option value="${type}-${ci}">${type.toUpperCase()} > ${cat.name}</option>`;
-                    let itemsHtml = "";
+                    sd.innerHTML += `<option value="${type}-${ci}">${cat.name}</option>`;
+                    let ih = "";
                     cat.items.forEach(it => {
-                        itemsHtml += `<div class="norm-item">
-                            <h3>${it.title}</h3>
-                            <p>${it.desc}</p>
-                            ${it.img ? `<img src="${it.img}" class="norm-img">` : ''}
-                        </div>`;
+                        ih += `<div class="norm-card"><h3>${it.title}</h3><p>${it.desc}</p>${it.img ? `<img src="${it.img}" class="norm-img">` : ''}</div>`;
                     });
-
-                    const target = type === 'norms' ? rn : rg;
-                    const color = type === 'norms' ? 'var(--norms)' : 'var(--gov)';
-                    target.innerHTML += `
-                        <div class="accordion" style="border-top: 4px solid ${color}">
-                            <div class="acc-header" onclick="this.parentElement.classList.toggle('open')">
-                                ${cat.name} <span style="color:${color}">▼</span>
-                            </div>
-                            <div class="acc-content">${itemsHtml || '<p style="padding:25px; opacity:0.5;">No hay leyes registradas aquí.</p>'}</div>
-                        </div>`;
+                    const color = type==='norms'?'var(--norms)':'var(--gov)';
+                    (type==='norms'?rn:rg).innerHTML += `<div class="accordion" style="border-left: 6px solid ${color}"><div class="acc-header" onclick="this.parentElement.classList.toggle('open')">${cat.name} <span>▼</span></div><div class="acc-content">${ih || '<p style="padding:20px;">Sin datos</p>'}</div></div>`;
                 });
             });
         }
 
         function renderAdmin() {
-            const target = document.getElementById('admin-render');
-            target.innerHTML = "";
+            const target = document.getElementById('admin-render'); target.innerHTML = "";
             ['norms', 'gov'].forEach(type => {
                 db[type].forEach((cat, ci) => {
-                    let html = `<div class="admin-box" style="border-color:#444;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
-                            <b style="color:var(--primary)">${cat.name}</b>
-                            <button class="btn btn-danger btn-small" onclick="delC('${type}',${ci})">ELIMINAR CAT</button>
-                        </div>`;
+                    let h = `<div class="admin-box"><b>${cat.name}</b>`;
                     cat.items.forEach((it, ii) => {
-                        html += `<div style="padding:12px; background:rgba(255,255,255,0.05); margin-bottom:8px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:13px;">${it.title}</span>
-                            <div>
-                                <button class="btn btn-primary btn-small" onclick="editI('${type}',${ci},${ii})">✎</button>
-                                <button class="btn btn-danger btn-small" onclick="delI('${type}',${ci},${ii})">✕</button>
-                            </div>
-                        </div>`;
+                        h += `<div style="display:flex; justify-content:space-between; margin-top:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px;"><span>${it.title}</span><div><button class="btn btn-primary" style="padding:5px 10px; font-size:10px;" onclick="editI('${type}',${ci},${ii})">✎</button><button class="btn btn-danger" style="padding:5px 10px; font-size:10px;" onclick="delI('${type}',${ci},${ii})">X</button></div></div>`;
                     });
-                    html += `</div>`;
-                    target.innerHTML += html;
+                    target.innerHTML += h + `</div>`;
                 });
+            });
+        }
+
+        function search() {
+            const q = document.getElementById('global-search').value.toLowerCase();
+            if(q.length < 2) return;
+            showView('norms'); // Redirige a normas para mostrar resultados
+            document.querySelectorAll('.norm-card').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(q) ? 'block' : 'none';
+                if(text.includes(q)) card.parentElement.parentElement.classList.add('open');
             });
         }
 
@@ -249,4 +226,3 @@
     </script>
 </body>
 </html>
- 
