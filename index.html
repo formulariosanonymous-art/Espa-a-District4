@@ -3,197 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>España District | Portal Oficial</title>
+    <title>España District | Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #00d2ff; --bg: #0f172a; --card-bg: rgba(30, 41, 59, 0.7);
-            --norms: #a855f7; --gov: #facc15; --danger: #ff4757;
+            --bg: #0b0f1a; --primary: #5865f2; --norms: #a855f7; --gov: #f59e0b;
+            --card: #161c2d; --text: #f1f5f9;
         }
 
         body { 
-            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: #f8fafc; min-height: 100vh; overflow-x: hidden;
+            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); 
+            color: var(--text); overflow-x: hidden; user-select: none;
         }
 
-        /* HEADER & NAV */
+        /* HEADER ESTILO CAPTURA */
         .header { 
-            position: fixed; top: 0; width: 100%; height: 75px; 
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 30px; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .menu-icon { font-size: 24px; cursor: pointer; }
+
+        /* VISTAS */
+        .view { display: none; flex-direction: column; align-items: center; padding: 40px 20px; min-height: 90vh; }
+        .view.active { display: flex; animation: fadeIn 0.3s ease; }
+
+        /* LOGO CON BRILLO (Como en la foto 1000108107) */
+        .logo-container {
+            width: 100px; height: 100px; margin-bottom: 20px;
+            background: linear-gradient(135deg, #a855f7, #5865f2);
+            border-radius: 25px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
+        }
+        .logo-container img { width: 70px; height: 70px; border-radius: 10px; }
+
+        /* BOTONES (Estilo exacto captura) */
+        .btn-main {
+            background: linear-gradient(to right, #7c3aed, #2563eb);
+            border: none; border-radius: 15px; color: white; padding: 15px 40px;
+            font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
+            margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        .view { display: none; flex-direction: column; align-items: center; padding: 110px 20px; box-sizing: border-box; width: 100%; }
-        .view.active { display: flex; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* BUSCADOR */
+        .search-box {
+            width: 90%; max-width: 500px; padding: 15px; border-radius: 12px;
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1);
+            color: white; margin-bottom: 30px; outline: none;
+        }
 
-        /* BUSCADOR ESTILO ANTERIOR */
-        .search-container { width: 100%; max-width: 600px; margin-bottom: 40px; position: relative; }
-        .search-bar { width: 100%; padding: 18px 25px; border-radius: 15px; border: 2px solid var(--primary); background: rgba(255,255,255,0.05); color: white; font-size: 16px; outline: none; box-shadow: 0 0 20px rgba(0,210,255,0.2); }
+        /* ACORDEONES (Foto 1000108108) */
+        .accordion {
+            width: 100%; max-width: 600px; margin-bottom: 10px;
+            background: var(--card); border-radius: 15px; overflow: hidden;
+            border-left: 4px solid var(--primary);
+        }
+        .acc-header { padding: 20px; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; }
+        .acc-content { max-height: 0; overflow: hidden; transition: 0.4s ease; background: rgba(0,0,0,0.2); }
+        .accordion.open .acc-content { max-height: 5000px; padding-bottom: 20px; }
 
-        /* ACORDEONES ESPACIADOS Y COLORIDOS */
-        .accordion { width: 100%; max-width: 900px; margin-bottom: 25px; border-radius: 20px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
-        .acc-header { padding: 25px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 800; font-size: 20px; background: rgba(255,255,255,0.02); }
-        .acc-content { max-height: 0; overflow: hidden; transition: 0.5s ease; background: rgba(0,0,0,0.2); }
-        .accordion.open .acc-content { max-height: 15000px; border-top: 1px solid rgba(255,255,255,0.05); }
+        /* TARJETAS DE CONTENIDO ESPACIADAS */
+        .item-card {
+            margin: 15px 20px; padding: 20px; background: rgba(255,255,255,0.03);
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .item-card img { width: 100%; border-radius: 10px; margin-top: 15px; }
 
-        /* TARJETAS DE NORMAS */
-        .norm-card { margin: 20px 30px; padding: 25px; border-radius: 15px; background: rgba(255,255,255,0.03); border-left: 5px solid var(--primary); }
-        .norm-card h3 { margin: 0 0 10px 0; color: #fff; }
-        .norm-card p { color: #cbd5e1; line-height: 1.6; white-space: pre-line; }
-        .norm-img { width: 100%; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); }
-
-        /* BOTONES */
-        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; padding: 12px 24px; color: white; transition: 0.3s; }
-        .btn-primary { background: linear-gradient(135deg, #00d2ff, #3a7bd5); }
-        .btn-danger { background: var(--danger); }
-
-        /* LOGIN & ADMIN */
-        .admin-box { background: rgba(15, 23, 42, 0.9); padding: 30px; border-radius: 20px; border: 1px solid var(--primary); width: 100%; max-width: 800px; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; }
+        /* ADMIN */
+        .admin-panel { width: 100%; max-width: 600px; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; background: #1e293b; border: 1px solid #334155; color: white; }
         
-        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body oncontextmenu="return false">
 
     <header class="header">
-        <div style="font-weight: 900; font-size: 22px; color: var(--primary);">ESPAÑA DISTRICT</div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn" style="background:rgba(255,255,255,0.1);" onclick="showView('home')">Inicio</button>
-            <button class="btn btn-primary" onclick="openGate()">Acceso Staff</button>
-        </div>
+        <div style="font-weight: 800; letter-spacing: 1px;" onclick="showView('home')">ESPAÑA DISTRICT</div>
+        <div class="menu-icon" onclick="openGate()">☰</div>
     </header>
 
     <section id="view-home" class="view active">
-        <h1 style="font-size: 50px; text-shadow: 0 10px 20px rgba(0,0,0,0.4);">Portal de Información</h1>
+        <div class="logo-container">
+            <img src="https://i.imgur.com/M6L7i7l.png" alt="Logo"> </div>
+        <h1 style="font-size: 32px; margin: 0;">España District</h1>
+        <p style="color: #94a3b8; margin-bottom: 30px;">Bienvenido al portal oficial de la ciudad.</p>
         
-        <div class="search-container">
-            <input type="text" class="search-bar" id="global-search" placeholder="Busca normativas o departamentos..." onkeyup="search()">
-        </div>
+        <input type="text" class="search-box" id="main-search" placeholder="¿Qué estás buscando?" onkeyup="liveSearch()">
 
-        <div style="display:flex; gap:20px;">
-            <button class="btn" style="background:var(--norms); padding:20px 40px; font-size:18px;" onclick="showView('norms')">NORMAS</button>
-            <button class="btn" style="background:var(--gov); padding:20px 40px; font-size:18px; color:#000;" onclick="showView('gov')">GOBIERNO</button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <button class="btn-main" onclick="showView('norms')" style="background: linear-gradient(to right, #a855f7, #6366f1);">Ver Normativas</button>
+            <button class="btn-main" onclick="showView('gov')" style="background: linear-gradient(to right, #f59e0b, #d97706);">Ver Gobierno</button>
         </div>
     </section>
 
-    <section id="view-norms" class="view"><h2 style="color:var(--norms)">📜 Normativas</h2><div id="render-norms" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div></section>
-    <section id="view-gov" class="view"><h2 style="color:var(--gov)">🏛️ Gobierno</h2><div id="render-gov" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div></section>
+    <section id="view-norms" class="view">
+        <h2 style="color:var(--norms)">📜 Normativas</h2>
+        <div id="render-norms" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    </section>
+
+    <section id="view-gov" class="view">
+        <h2 style="color:var(--gov)">🏛️ Gobierno</h2>
+        <div id="render-gov" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    </section>
 
     <section id="view-admin" class="view">
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <button class="btn btn-primary" onclick="tab('t-add')">Añadir</button>
-            <button class="btn" style="background:#444;" onclick="tab('t-edit')">Gestionar</button>
-            <button class="btn btn-danger" onclick="location.reload()">Cerrar</button>
-        </div>
-
-        <div id="t-add" class="tab-content" style="width:100%; max-width:800px;">
-            <div class="admin-box">
-                <h3>+ Crear Categoría</h3>
-                <select id="c-type"><option value="norms">Normativa</option><option value="gov">Gobierno</option></select>
-                <input type="text" id="c-name" placeholder="Ej: Normas Civiles">
-                <button class="btn btn-primary" onclick="addC()">Crear</button>
+        <div class="admin-panel">
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button class="btn-main" style="padding:10px; flex:1" onclick="tab('t-add')">Crear</button>
+                <button class="btn-main" style="padding:10px; flex:1; background:#444" onclick="tab('t-edit')">Gestionar</button>
+                <button class="btn-main" style="padding:10px; flex:1; background:#ef4444" onclick="location.reload()">Salir</button>
             </div>
-            <div class="admin-box">
-                <h3>+ Publicar Ítem (Imagen Galería)</h3>
+
+            <div id="t-add" class="tab-content">
+                <h3>Crear Nueva Categoría</h3>
+                <select id="c-type"><option value="norms">Normas</option><option value="gov">Gobierno</option></select>
+                <input type="text" id="c-name" placeholder="Nombre de categoría">
+                <button class="btn-main" onclick="addC()" style="width:100%">Añadir</button>
+                
+                <h3 style="margin-top:30px">Publicar Ítem con Foto</h3>
                 <select id="c-dest"></select>
                 <input type="text" id="i-title" placeholder="Título">
-                <textarea id="i-desc" rows="4" placeholder="Descripción..."></textarea>
+                <textarea id="i-desc" rows="4" placeholder="Descripción"></textarea>
                 <input type="file" id="i-file" accept="image/*">
-                <button class="btn btn-primary" onclick="addI()" style="width:100%; margin-top:10px;">Publicar</button>
+                <button class="btn-main" onclick="addI()" style="width:100%">Publicar</button>
             </div>
-            <div class="admin-box">
-                <h3>Webhook Discord</h3>
-                <input type="text" id="w-url" placeholder="URL Webhook">
-                <button class="btn btn-primary" onclick="saveW()">Guardar Webhook</button>
-            </div>
-        </div>
 
-        <div id="t-edit" class="tab-content" style="width:100%; max-width:800px; display:none;">
-            <div id="admin-render"></div>
+            <div id="t-edit" class="tab-content" style="display:none;">
+                <div id="admin-render"></div>
+            </div>
         </div>
     </section>
 
     <div id="gate" class="overlay">
-        <div style="background:#1e1b4b; padding:40px; border-radius:25px; border:2px solid var(--primary); text-align:center;">
-            <h3>Llave Maestra</h3>
-            <input type="password" id="p-gate" style="text-align:center;">
-            <button class="btn btn-primary" onclick="checkG()">Siguiente</button>
-        </div>
-    </div>
-
-    <div id="login" class="overlay">
-        <div style="background:#1e1b4b; padding:40px; border-radius:25px; border:2px solid var(--primary); text-align:center;">
-            <h3>Staff Login</h3>
-            <input type="text" id="s-user" placeholder="Nombre">
-            <input type="password" id="s-pass" placeholder="Contraseña">
-            <button class="btn btn-primary" onclick="finalLogin()">Acceder</button>
+        <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; width:280px;">
+            <h3>Acceso Staff</h3>
+            <input type="password" id="p-gate" placeholder="Contraseña">
+            <button class="btn-main" onclick="checkG()" style="width:100%">Entrar</button>
+            <p onclick="closeGate()" style="margin-top:15px; cursor:pointer; opacity:0.5; font-size:12px;">Cerrar</p>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('ed_final_v5')) || { norms: [], gov: [], webhook: "" };
-        let currentUser = "";
+        let db = JSON.parse(localStorage.getItem('ed_db_final_v1')) || { norms: [], gov: [] };
 
-        function save() { localStorage.setItem('ed_final_v5', JSON.stringify(db)); render(); renderAdmin(); }
-
+        function save() { localStorage.setItem('ed_db_final_v1', JSON.stringify(db)); render(); renderAdmin(); }
         function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); }
-        function tab(id) { document.querySelectorAll('.tab-content').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; }
         function openGate() { document.getElementById('gate').style.display='flex'; }
+        function closeGate() { document.getElementById('gate').style.display='none'; }
+        function tab(id) { document.querySelectorAll('.tab-content').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; }
 
-        async function log(t, d) {
-            if(!db.webhook) return;
-            await fetch(db.webhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title: t, description: d, color: 0x00d2ff, timestamp: new Date() }] }) });
-        }
-
-        function checkG() { if(document.getElementById('p-gate').value === 'pampiano17') { document.getElementById('gate').style.display='none'; document.getElementById('login').style.display='flex'; } }
-        function finalLogin() {
-            if(document.getElementById('s-pass').value === 'ESP123') {
-                currentUser = document.getElementById('s-user').value;
-                document.getElementById('login').style.display='none';
-                showView('admin'); log("📥 Entrada Panel", `Staff: **${currentUser}**`);
-            }
-        }
+        function checkG() { if(document.getElementById('p-gate').value === 'pampiano17') { closeGate(); showView('admin'); renderAdmin(); } }
 
         function addC() {
             const t = document.getElementById('c-type').value, n = document.getElementById('c-name').value;
-            if(n) { db[t].push({ name: n, items: [] }); save(); log("📁 Nueva Categoría", `Staff: **${currentUser}** creó **${n}**`); }
+            if(n) { db[t].push({ name: n, items: [] }); save(); document.getElementById('c-name').value=""; }
         }
 
         function addI() {
             const p = document.getElementById('c-dest').value.split('-'), t = document.getElementById('i-title').value, d = document.getElementById('i-desc').value, f = document.getElementById('i-file').files[0];
-            if(!t || !d) return;
-            const process = (img) => {
-                db[p[0]][p[1]].items.push({ title: t, desc: d, img });
-                save(); log("📝 Publicación", `Staff: **${currentUser}** publicó **${t}** en **${db[p[0]][p[1]].name}**`);
-                document.getElementById('i-title').value = ""; document.getElementById('i-desc').value = ""; document.getElementById('i-file').value = ""; alert("Publicado");
-            };
-            if(f) { const reader = new FileReader(); reader.onload = (e) => process(e.target.result); reader.readAsDataURL(f); } else { process(null); }
+            if(!t || !d) return alert("Completa los campos");
+            const done = (img) => { db[p[0]][p[1]].items.push({ title: t, desc: d, img }); save(); alert("Listo!"); };
+            if(f) { const r = new FileReader(); r.onload = (e) => done(e.target.result); r.readAsDataURL(f); } else { done(null); }
         }
 
         function editI(t, ci, ii) {
-            const nt = prompt("Nuevo Título:", db[t][ci].items[ii].title), nd = prompt("Descripción:", db[t][ci].items[ii].desc);
-            if(nt && nd) { db[t][ci].items[ii].title = nt; db[t][ci].items[ii].desc = nd; save(); log("✎ Edición", `Staff: **${currentUser}** editó **${nt}**`); }
+            const nt = prompt("Nuevo Título:", db[t][ci].items[ii].title);
+            const nd = prompt("Nueva Descripción:", db[t][ci].items[ii].desc);
+            if(nt && nd) { db[t][ci].items[ii].title = nt; db[t][ci].items[ii].desc = nd; save(); }
         }
 
         function delI(t, ci, ii) { if(confirm("¿Borrar?")) { db[t][ci].items.splice(ii, 1); save(); } }
-        function saveW() { db.webhook = document.getElementById('w-url').value; save(); alert("Webhook guardado"); }
+        function delC(t, ci) { if(confirm("¿Borrar categoría completa?")) { db[t].splice(ci, 1); save(); } }
 
         function render() {
             const rn = document.getElementById('render-norms'), rg = document.getElementById('render-gov'), sd = document.getElementById('c-dest');
             rn.innerHTML = ""; rg.innerHTML = ""; sd.innerHTML = "";
             ['norms', 'gov'].forEach(type => {
                 db[type].forEach((cat, ci) => {
-                    sd.innerHTML += `<option value="${type}-${ci}">${cat.name}</option>`;
-                    let ih = "";
+                    sd.innerHTML += `<option value="${type}-${ci}">${type.toUpperCase()} - ${cat.name}</option>`;
+                    let itemsHtml = "";
                     cat.items.forEach(it => {
-                        ih += `<div class="norm-card"><h3>${it.title}</h3><p>${it.desc}</p>${it.img ? `<img src="${it.img}" class="norm-img">` : ''}</div>`;
+                        itemsHtml += `<div class="item-card"><h3>${it.title}</h3><p style="white-space:pre-line; opacity:0.8;">${it.desc}</p>${it.img ? `<img src="${it.img}">` : ''}</div>`;
                     });
                     const color = type==='norms'?'var(--norms)':'var(--gov)';
-                    (type==='norms'?rn:rg).innerHTML += `<div class="accordion" style="border-left: 6px solid ${color}"><div class="acc-header" onclick="this.parentElement.classList.toggle('open')">${cat.name} <span>▼</span></div><div class="acc-content">${ih || '<p style="padding:20px;">Sin datos</p>'}</div></div>`;
+                    (type==='norms'?rn:rg).innerHTML += `<div class="accordion" style="border-left-color:${color}"><div class="acc-header" onclick="this.parentElement.classList.toggle('open')">${cat.name} <span>▼</span></div><div class="acc-content">${itemsHtml || '<p style="padding:20px;opacity:0.5">Vacío</p>'}</div></div>`;
                 });
             });
         }
@@ -202,23 +197,23 @@
             const target = document.getElementById('admin-render'); target.innerHTML = "";
             ['norms', 'gov'].forEach(type => {
                 db[type].forEach((cat, ci) => {
-                    let h = `<div class="admin-box"><b>${cat.name}</b>`;
+                    let h = `<div style="background:#1e293b; padding:15px; border-radius:10px; margin-bottom:10px;"><div style="display:flex; justify-content:space-between"><b>${cat.name}</b><button onclick="delC('${type}',${ci})" style="background:red; color:white; border:none; border-radius:5px; padding:5px">Borrar</button></div>`;
                     cat.items.forEach((it, ii) => {
-                        h += `<div style="display:flex; justify-content:space-between; margin-top:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px;"><span>${it.title}</span><div><button class="btn btn-primary" style="padding:5px 10px; font-size:10px;" onclick="editI('${type}',${ci},${ii})">✎</button><button class="btn btn-danger" style="padding:5px 10px; font-size:10px;" onclick="delI('${type}',${ci},${ii})">X</button></div></div>`;
+                        h += `<div style="display:flex; justify-content:space-between; margin-top:10px; font-size:13px; background:rgba(0,0,0,0.2); padding:8px; border-radius:5px;"><span>${it.title}</span><div><button onclick="editI('${type}',${ci},${ii})">✎</button> <button onclick="delI('${type}',${ci},${ii})">X</button></div></div>`;
                     });
                     target.innerHTML += h + `</div>`;
                 });
             });
         }
 
-        function search() {
-            const q = document.getElementById('global-search').value.toLowerCase();
+        function liveSearch() {
+            const q = document.getElementById('main-search').value.toLowerCase();
             if(q.length < 2) return;
-            showView('norms'); // Redirige a normas para mostrar resultados
-            document.querySelectorAll('.norm-card').forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(q) ? 'block' : 'none';
-                if(text.includes(q)) card.parentElement.parentElement.classList.add('open');
+            showView('norms');
+            document.querySelectorAll('.accordion').forEach(acc => {
+                const hasMatch = acc.innerText.toLowerCase().includes(q);
+                acc.style.display = hasMatch ? 'block' : 'none';
+                if(hasMatch) acc.classList.add('open');
             });
         }
 
